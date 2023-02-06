@@ -2,5 +2,6 @@
 
 hyphen save the day
 
-Build simple Scratchy project in Rust
-See [sb-scratchy](https://github.com/rusty-scratch/sb-scratchy) for advance builder
+Low level Scratch project builder
+
+See [sb-scratchy](https://github.com/rusty-scratch/sb-scratchy) for high level and advanced builder
