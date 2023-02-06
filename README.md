@@ -1,5 +1,3 @@
-# mcscratchy
-Create Scratch project in pure Rust.
-
-This project build Scratch project using Rust's powerful type system.
-In development
+# mc-itchy
+Build simple Scratchy project in Rust
+See mc-scratchy for advance builder
