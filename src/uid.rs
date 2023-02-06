@@ -7,7 +7,7 @@ const SOUP: &str =
 const SOUP_LEN: usize = SOUP.len();
 const UID_LEN: usize = 20;
 
-#[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Hash)]
 pub struct Uid(String);
 
 pub fn uid() -> String {
