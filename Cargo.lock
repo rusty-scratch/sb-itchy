@@ -312,17 +312,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rs-sb3"
-version = "0.5.0"
-source = "git+https://github.com/Multirious/rs-sb3#63d39cd86fc0c041359691f2674a2cfd3afc7fd4"
-dependencies = [
- "serde",
- "serde_json",
- "serde_repr",
- "serde_tuple",
-]
-
-[[package]]
 name = "ryu"
 version = "1.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -335,9 +324,20 @@ dependencies = [
  "lazy_static",
  "md5",
  "rand",
- "rs-sb3",
+ "sb-sbity",
  "serde_json",
  "zip",
+]
+
+[[package]]
+name = "sb-sbity"
+version = "0.6.0"
+source = "git+https://github.com/rusty-scratch/sb-sbity#f5b43b64b77a1fdafc6352c02a06ff140cd7451a"
+dependencies = [
+ "serde",
+ "serde_json",
+ "serde_repr",
+ "serde_tuple",
 ]
 
 [[package]]

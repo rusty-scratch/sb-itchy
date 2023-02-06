@@ -1,18 +1,15 @@
 use std::collections::HashMap;
 
-use crate::uid::Uid;
-use rs_sb3::{
+use crate::{
+    resource::Resource,
+    target::{SpriteBuilder, StageBuilder},
+    uid::Uid,
+};
+use sb_sbity::{
     monitor::Monitor,
     project::{Meta, Project},
     target::SpriteOrStage,
 };
-use target::{SpriteBuilder, StageBuilder};
-
-use crate::resource::Resource;
-
-pub mod asset;
-pub mod script;
-pub mod target;
 
 #[rustfmt::skip]
 #[derive(Debug, Clone, PartialEq)]

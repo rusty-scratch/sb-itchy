@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use rs_sb3::{
+use sb_sbity::{
     asset::{Costume, Sound},
     block::Block,
     broadcast::Broadcast,
@@ -11,21 +11,16 @@ use rs_sb3::{
     variable::Variable,
 };
 
+use crate::build_context::GlobalVarListContext;
 use crate::{
+    asset::{CostumeBuilder, SoundBuilder},
+    build_context::TargetContext,
+    comment::CommentBuilder,
+    data::{ListBuilder, VariableBuilder},
     resource::Resource,
-    scripting::script_builder::{StackBuilder, TargetContext},
+    stack::StackBuilder,
     uid::Uid,
 };
-
-use super::{
-    asset::{CostumeBuilder, SoundBuilder},
-    script::{CommentBuilder, ListBuilder, VariableBuilder},
-};
-
-pub struct GlobalVarListContext {
-    vars: HashMap<String, Uid>,
-    lists: HashMap<String, Uid>,
-}
 
 #[rustfmt::skip]
 #[derive(Debug, Clone, PartialEq)]

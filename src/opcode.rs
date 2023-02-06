@@ -8,7 +8,7 @@
 
 #![allow(unused)]
 
-use rs_sb3::value::OpCode;
+use sb_sbity::value::OpCode;
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

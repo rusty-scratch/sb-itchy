@@ -7,12 +7,12 @@
 //!  - "_mouse_"
 //!
 
-use super::script_builder::{
-    BlockFieldBuilder, BlockInputBuilder, BlockNormalBuilder, StackBuilder,
+use crate::{
+    block::{BlockFieldBuilder, BlockInputBuilder, BlockNormalBuilder, BlockVarListBuilder},
+    opcode::PrimaryOpCode,
+    stack::StackBuilder,
 };
-use crate::opcode::PrimaryOpCode;
-use crate::scripting::script_builder::BlockVarListBuilder;
-use rs_sb3::block::{BlockMutation, BlockMutationEnum, ListOrVariable};
+use sb_sbity::block::{BlockMutation, BlockMutationEnum, ListOrVariable};
 
 // Control
 // Event

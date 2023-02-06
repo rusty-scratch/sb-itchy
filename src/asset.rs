@@ -1,4 +1,4 @@
-use rs_sb3::asset::{Asset, Costume, Sound};
+use sb_sbity::asset::{Asset, Costume, Sound};
 
 use crate::resource::Resource;
 
