@@ -17,20 +17,23 @@ pub mod import;
 
 pub mod blocks;
 
-pub use self::{
-    asset::{AssetBuilder, CostumeBuilder, SoundBuilder},
-    block::{
-        BlockBuilder, BlockFieldBuilder, BlockInputBuilder, BlockNormalBuilder,
-        BlockVarListBuilder, FieldKind, StackOrValue, VarListFrom,
-    },
-    build_context::{GlobalVarListContext, TargetContext},
-    comment::CommentBuilder,
-    data::{ListBuilder, VariableBuilder},
-    opcode::PrimaryOpCode,
-    project::ProjectBuilder,
-    resource::{Resource, ResourceError},
-    stack::StackBuilder,
-    target::{SpriteBuilder, StageBuilder, TargetBuilder},
-    uid::Uid,
-};
-pub use sb_sbity::block::ShadowInputType;
+pub mod prelude {
+    pub use self::{
+        asset::{AssetBuilder, CostumeBuilder, SoundBuilder},
+        block::{
+            BlockBuilder, BlockFieldBuilder, BlockInputBuilder, BlockNormalBuilder,
+            BlockVarListBuilder, FieldKind, StackOrValue, VarListFrom,
+        },
+        build_context::{GlobalVarListContext, TargetContext},
+        comment::CommentBuilder,
+        data::{ListBuilder, VariableBuilder},
+        opcode::PrimaryOpCode,
+        project::ProjectBuilder,
+        resource::{Resource, ResourceError},
+        stack::StackBuilder,
+        target::{SpriteBuilder, StageBuilder, TargetBuilder},
+        uid::Uid,
+    };
+    use super::*;
+    pub use sb_sbity::block::ShadowInputType;
+}
