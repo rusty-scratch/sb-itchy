@@ -268,7 +268,8 @@ impl BlockNormalBuilder {
             }
             None => None,
         };
-        let block_b = BlockNormal {
+        
+        BlockNormal {
             opcode,
             comment,
             next: None,
@@ -280,8 +281,7 @@ impl BlockNormalBuilder {
             mutation,
             x: x.map(|x| x.into()),
             y: y.map(|y| y.into()),
-        };
-        block_b
+        }
     }
 }
 
@@ -340,8 +340,7 @@ impl BlockFieldBuilder {
             FieldKind::SpriteList => target_context.this_sprite_lists,
             FieldKind::GlobalList => target_context.global_lists,
         }
-        .get(value_str)
-        .map(|uid| uid.clone())
+        .get(value_str).cloned()
         .unwrap_or_else(|| Uid::new("__unknown__"));
         BlockField::WithId {
             value,
@@ -467,23 +466,22 @@ impl BlockVarListBuilder {
             (ListOrVariable::List, VarListFrom::Global) => target_context.global_lists,
             (ListOrVariable::List, VarListFrom::Sprite) => target_context.this_sprite_lists,
         }
-        .get(&name)
-        .map(|uid| uid.clone())
+        .get(&name).cloned()
         .unwrap_or(Uid::new("__unknown__"));
         if let Some(comment) = comment {
             let comment_uid = Uid::generate();
             let mut comment = comment.build();
             comment.block_id = Some(my_uid.clone().into_inner());
-            comment_buff.insert(comment_uid.clone(), comment);
+            comment_buff.insert(comment_uid, comment);
         }
-        let block_varlist_b = BlockVarListReporterTop {
+        
+        BlockVarListReporterTop {
             kind,
             name,
             id: varlist_id.into_inner(),
             x: x.into(),
             y: y.into(),
-        };
-        block_varlist_b
+        }
     }
 }
 

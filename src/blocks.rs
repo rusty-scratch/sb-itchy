@@ -23,11 +23,11 @@ use sb_sbity::block::{BlockMutation, BlockMutationEnum};
 // Sound
 // Data
 
-type BFB = BlockFieldBuilder;
-type BIB = BlockInputBuilder;
+type Bfb = BlockFieldBuilder;
+type Bib = BlockInputBuilder;
 
 // Control =====================================================================
-pub fn wait(duration: BIB) -> StackBuilder {
+pub fn wait(duration: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::control_wait);
         b.add_input("DURATION", duration);
@@ -35,7 +35,7 @@ pub fn wait(duration: BIB) -> StackBuilder {
     })
 }
 
-pub fn repeat(times: BIB, to_repeat: Option<BIB>) -> StackBuilder {
+pub fn repeat(times: Bib, to_repeat: Option<Bib>) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::control_repeat);
         b.add_input("TIMES", times);
@@ -46,7 +46,7 @@ pub fn repeat(times: BIB, to_repeat: Option<BIB>) -> StackBuilder {
     })
 }
 
-pub fn forever(to_repeat: Option<BIB>) -> StackBuilder {
+pub fn forever(to_repeat: Option<Bib>) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::control_forever);
         if let Some(to_repeat) = to_repeat {
@@ -56,7 +56,7 @@ pub fn forever(to_repeat: Option<BIB>) -> StackBuilder {
     })
 }
 
-pub fn if_(condition: BIB, if_true: Option<BIB>) -> StackBuilder {
+pub fn if_(condition: Bib, if_true: Option<Bib>) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::control_if);
         b.add_input("CONDITION", condition);
@@ -67,7 +67,7 @@ pub fn if_(condition: BIB, if_true: Option<BIB>) -> StackBuilder {
     })
 }
 
-pub fn if_else(condition: BIB, if_true: Option<BIB>, if_false: Option<BIB>) -> StackBuilder {
+pub fn if_else(condition: Bib, if_true: Option<Bib>, if_false: Option<Bib>) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::control_if_else);
         b.add_input("CONDITION", condition);
@@ -81,7 +81,7 @@ pub fn if_else(condition: BIB, if_true: Option<BIB>, if_false: Option<BIB>) -> S
     })
 }
 
-pub fn wait_until(condition: BIB) -> StackBuilder {
+pub fn wait_until(condition: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::control_wait_until);
         b.add_input("CONDITION", condition);
@@ -89,7 +89,7 @@ pub fn wait_until(condition: BIB) -> StackBuilder {
     })
 }
 
-pub fn repeat_until(condition: BIB, to_repeat: Option<BIB>) -> StackBuilder {
+pub fn repeat_until(condition: Bib, to_repeat: Option<Bib>) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::control_if_else);
         b.add_input("CONDITION", condition);
@@ -104,7 +104,7 @@ pub fn repeat_until(condition: BIB, to_repeat: Option<BIB>) -> StackBuilder {
 ///  - "this script" and `has_next` should be `false`
 ///  - "other scripts in sprite" and `has_next` should be `true`
 ///  - "all" and `has_next` should be `false`
-pub fn stop(stop_option: BFB, has_next: bool) -> StackBuilder {
+pub fn stop(stop_option: Bfb, has_next: bool) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::control_stop);
         b.add_field("STOP_OPTION", stop_option)
@@ -125,7 +125,7 @@ pub fn when_i_start_as_a_clone() -> StackBuilder {
 
 /// Accepts:
 ///  - Sprite name
-pub fn create_clone_of(sprite: BIB) -> StackBuilder {
+pub fn create_clone_of(sprite: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::control_create_clone_of);
         b.add_input("CLONE_OPTION", sprite);
@@ -136,7 +136,7 @@ pub fn create_clone_of(sprite: BIB) -> StackBuilder {
 /// Uses as argument to [`create_clone_of`]
 /// Accepts:
 ///  - Sprite name
-pub fn create_clone_of_menu(sprite: BFB) -> StackBuilder {
+pub fn create_clone_of_menu(sprite: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::control_create_clone_of);
         b.add_field("CLONE_OPTION", sprite).set_shadow(true);
@@ -166,7 +166,7 @@ pub fn when_flag_clicked() -> StackBuilder {
 ///  - "down arrow"
 ///  - Number 0 - 9
 ///  - Letter a - z
-pub fn when_key_pressed(key: BFB) -> StackBuilder {
+pub fn when_key_pressed(key: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::event_whenkeypressed);
         b.add_field("KEY_OPTION", key);
@@ -182,7 +182,7 @@ pub fn when_this_sprite_clicked() -> StackBuilder {
 
 /// Accepts:
 ///  - Backdrop name
-pub fn when_backdrop_switches_to(backdrop: BFB) -> StackBuilder {
+pub fn when_backdrop_switches_to(backdrop: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::event_whenbackdropswitchesto);
         b.add_field("BACKDROP", backdrop);
@@ -193,7 +193,7 @@ pub fn when_backdrop_switches_to(backdrop: BFB) -> StackBuilder {
 /// Accepts:
 /// - "LOUDNESS"
 /// - "TIMER"
-pub fn when_greater_than(variable: BFB, value: BIB) -> StackBuilder {
+pub fn when_greater_than(variable: Bfb, value: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::event_whengreaterthan);
         b.add_input("VALUE", value)
@@ -202,7 +202,7 @@ pub fn when_greater_than(variable: BFB, value: BIB) -> StackBuilder {
     })
 }
 
-pub fn when_broadcast_received(broadcast: BFB) -> StackBuilder {
+pub fn when_broadcast_received(broadcast: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::event_whenbroadcastreceived);
         b.add_field("BROADCAST_OPTION", broadcast);
@@ -210,7 +210,7 @@ pub fn when_broadcast_received(broadcast: BFB) -> StackBuilder {
     })
 }
 
-pub fn broadcast(broadcast: BIB) -> StackBuilder {
+pub fn broadcast(broadcast: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::event_broadcast);
         b.add_input("BROADCAST_INPUT", broadcast);
@@ -218,7 +218,7 @@ pub fn broadcast(broadcast: BIB) -> StackBuilder {
     })
 }
 
-pub fn broadcast_and_wait(broadcast: BIB) -> StackBuilder {
+pub fn broadcast_and_wait(broadcast: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::event_broadcastandwait);
         b.add_input("BROADCAST_INPUT", broadcast);
@@ -227,7 +227,7 @@ pub fn broadcast_and_wait(broadcast: BIB) -> StackBuilder {
 }
 
 // Looks =======================================================================
-pub fn think(message: BIB) -> StackBuilder {
+pub fn think(message: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_think);
         b.add_input("MESSAGE", message);
@@ -235,7 +235,7 @@ pub fn think(message: BIB) -> StackBuilder {
     })
 }
 
-pub fn think_for_secs(message: BIB, secs: BIB) -> StackBuilder {
+pub fn think_for_secs(message: Bib, secs: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_thinkforsecs);
         b.add_input("MESSAGE", message).add_input("SECS", secs);
@@ -243,7 +243,7 @@ pub fn think_for_secs(message: BIB, secs: BIB) -> StackBuilder {
     })
 }
 
-pub fn say(message: BIB) -> StackBuilder {
+pub fn say(message: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_say);
         b.add_input("MESSAGE", message);
@@ -251,7 +251,7 @@ pub fn say(message: BIB) -> StackBuilder {
     })
 }
 
-pub fn say_for_secs(message: BIB, secs: BIB) -> StackBuilder {
+pub fn say_for_secs(message: Bib, secs: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_sayforsecs);
         b.add_input("MESSAGE", message).add_input("SECS", secs);
@@ -261,7 +261,7 @@ pub fn say_for_secs(message: BIB, secs: BIB) -> StackBuilder {
 
 /// Accepts:
 ///  - Costume name
-pub fn switch_costume_to(costume: BIB) -> StackBuilder {
+pub fn switch_costume_to(costume: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_switchcostumeto);
         b.add_input("COSTUME", costume);
@@ -272,7 +272,7 @@ pub fn switch_costume_to(costume: BIB) -> StackBuilder {
 /// Uses as argument to [`switch_costume_to`]
 /// Accepts:
 ///  - Costume name
-pub fn costume_menu(costume: BFB) -> StackBuilder {
+pub fn costume_menu(costume: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_costume);
         b.add_field("COSTUME", costume).set_shadow(true);
@@ -286,7 +286,7 @@ pub fn next_costume() -> StackBuilder {
 
 /// Accepts:
 ///  - Costume name
-pub fn switch_backdrop_to(backdrop: BIB) -> StackBuilder {
+pub fn switch_backdrop_to(backdrop: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_switchbackdropto);
         b.add_input("BACKDROP", backdrop);
@@ -297,7 +297,7 @@ pub fn switch_backdrop_to(backdrop: BIB) -> StackBuilder {
 /// Uses as argument to [`switch_backdrop_to`]
 /// Accepts:
 ///  - Backdrop name
-pub fn backdrop_menu(backdrop: BFB) -> StackBuilder {
+pub fn backdrop_menu(backdrop: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_backdrops);
         b.add_field("BACKDROP", backdrop).set_shadow(true);
@@ -309,7 +309,7 @@ pub fn next_backdrop() -> StackBuilder {
     StackBuilder::start(BlockNormalBuilder::new(PrimaryOpCode::looks_nextbackdrop))
 }
 
-pub fn change_size_by(by: BIB) -> StackBuilder {
+pub fn change_size_by(by: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_changesizeby);
         b.add_input("CHANGE", by);
@@ -317,7 +317,7 @@ pub fn change_size_by(by: BIB) -> StackBuilder {
     })
 }
 
-pub fn set_size_to(to: BIB) -> StackBuilder {
+pub fn set_size_to(to: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_setsizeto);
         b.add_input("SIZE", to);
@@ -334,7 +334,7 @@ pub fn set_size_to(to: BIB) -> StackBuilder {
 ///  - "MOSAIC"
 ///  - "BRIGHTNESS"
 ///  - "GHOST"
-pub fn change_looks_effect_by(effect: BFB, by: BIB) -> StackBuilder {
+pub fn change_looks_effect_by(effect: Bfb, by: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_changeeffectby);
         b.add_input("CHANGE", by).add_field("EFFECT", effect);
@@ -350,7 +350,7 @@ pub fn change_looks_effect_by(effect: BFB, by: BIB) -> StackBuilder {
 ///  - "MOSAIC"
 ///  - "BRIGHTNESS"
 ///  - "GHOST"
-pub fn set_looks_effect_to(effect: BFB, to: BIB) -> StackBuilder {
+pub fn set_looks_effect_to(effect: Bfb, to: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_seteffectto);
         b.add_input("TO", to).add_field("EFFECT", effect);
@@ -375,7 +375,7 @@ pub fn hide() -> StackBuilder {
 /// Accepts:
 ///  - "front"
 ///  - "back"
-pub fn go_to_layer(layer: BFB) -> StackBuilder {
+pub fn go_to_layer(layer: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_gotofrontback);
         b.add_field("FRONT_BACK", layer);
@@ -386,7 +386,7 @@ pub fn go_to_layer(layer: BFB) -> StackBuilder {
 /// `layer` Accepts:
 ///  - "foward"
 ///  - "backward"
-pub fn change_layer(layer: BFB, by: BIB) -> StackBuilder {
+pub fn change_layer(layer: Bfb, by: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_goforwardbackwardlayers);
         b.add_input("NUM", by).add_field("FORWARD_BACKWORD", layer);
@@ -397,7 +397,7 @@ pub fn change_layer(layer: BFB, by: BIB) -> StackBuilder {
 /// Accepts:
 /// - "number"
 /// - "name"
-pub fn costume(return_type: BFB) -> StackBuilder {
+pub fn costume(return_type: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_costumenumbername);
         b.add_field("NUMBER_NAME", return_type);
@@ -408,7 +408,7 @@ pub fn costume(return_type: BFB) -> StackBuilder {
 /// Accepts:
 /// - "number"
 /// - "name"
-pub fn backdrop(return_type: BFB) -> StackBuilder {
+pub fn backdrop(return_type: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_backdropnumbername);
         b.add_field("NUMBER_NAME", return_type);
@@ -421,7 +421,7 @@ pub fn size() -> StackBuilder {
 }
 
 // Motion ======================================================================
-pub fn move_steps(steps: BIB) -> StackBuilder {
+pub fn move_steps(steps: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_movesteps);
         b.add_input("STEPS", steps);
@@ -429,7 +429,7 @@ pub fn move_steps(steps: BIB) -> StackBuilder {
     })
 }
 
-pub fn turn_right(degress: BIB) -> StackBuilder {
+pub fn turn_right(degress: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_turnright);
         b.add_input("DEGREES", degress);
@@ -437,7 +437,7 @@ pub fn turn_right(degress: BIB) -> StackBuilder {
     })
 }
 
-pub fn turn_left(degress: BIB) -> StackBuilder {
+pub fn turn_left(degress: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_turnleft);
         b.add_input("DEGREES", degress);
@@ -449,7 +449,7 @@ pub fn turn_left(degress: BIB) -> StackBuilder {
 ///  - Sprite name
 ///  - "_mouse_" go to mouse position
 ///  - "_random_" go to random position
-pub fn go_to(to: BIB) -> StackBuilder {
+pub fn go_to(to: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_goto);
         b.add_input("TO", to);
@@ -462,7 +462,7 @@ pub fn go_to(to: BIB) -> StackBuilder {
 ///  - Sprite name
 ///  - "_mouse_" go to mouse position
 ///  - "_random_" go to random position
-pub fn go_to_menu(to: BFB) -> StackBuilder {
+pub fn go_to_menu(to: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_goto_menu);
         b.add_field("TO", to).set_shadow(true);
@@ -470,7 +470,7 @@ pub fn go_to_menu(to: BFB) -> StackBuilder {
     })
 }
 
-pub fn goto_xy(x: BIB, y: BIB) -> StackBuilder {
+pub fn goto_xy(x: Bib, y: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_gotoxy);
         b.add_input("X", x).add_input("Y", y);
@@ -482,7 +482,7 @@ pub fn goto_xy(x: BIB, y: BIB) -> StackBuilder {
 ///  - Sprite name
 ///  - "_mouse_" glide to mouse position
 ///  - "_random_" glide to random position
-pub fn glide_to(duration_secs: BIB, to: BIB) -> StackBuilder {
+pub fn glide_to(duration_secs: Bib, to: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_gotoxy);
         b.add_input("SECS", duration_secs).add_input("TO", to);
@@ -495,7 +495,7 @@ pub fn glide_to(duration_secs: BIB, to: BIB) -> StackBuilder {
 ///  - Sprite name
 ///  - "_mouse_" glide to mouse position
 ///  - "_random_" glide to random position
-pub fn glide_to_menu(to: BFB) -> StackBuilder {
+pub fn glide_to_menu(to: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_glideto_menu);
         b.add_field("TO", to).set_shadow(true);
@@ -503,7 +503,7 @@ pub fn glide_to_menu(to: BFB) -> StackBuilder {
     })
 }
 
-pub fn glide_to_xy(dur: BIB, x: BIB, y: BIB) -> StackBuilder {
+pub fn glide_to_xy(dur: Bib, x: Bib, y: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_glidesecstoxy);
         b.add_input("SECS", dur).add_input("X", x).add_input("Y", y);
@@ -511,7 +511,7 @@ pub fn glide_to_xy(dur: BIB, x: BIB, y: BIB) -> StackBuilder {
     })
 }
 
-pub fn point_in_direction(direction: BIB) -> StackBuilder {
+pub fn point_in_direction(direction: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_pointindirection);
         b.add_input("DIRECTION", direction);
@@ -522,7 +522,7 @@ pub fn point_in_direction(direction: BIB) -> StackBuilder {
 /// Accepts:
 ///  - Sprite name
 ///  - "_mouse_" glide to mouse position
-pub fn point_towards(towards: BIB) -> StackBuilder {
+pub fn point_towards(towards: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_pointtowards);
         b.add_input("TOWARDS", towards);
@@ -534,7 +534,7 @@ pub fn point_towards(towards: BIB) -> StackBuilder {
 /// Accepts:
 ///  - Sprite name
 ///  - "_mouse_" glide to mouse position
-pub fn point_towards_menu(towards: BFB) -> StackBuilder {
+pub fn point_towards_menu(towards: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_pointtowards_menu);
         b.add_field("TOWARDS", towards).set_shadow(true);
@@ -542,7 +542,7 @@ pub fn point_towards_menu(towards: BFB) -> StackBuilder {
     })
 }
 
-pub fn set_x(x: BIB) -> StackBuilder {
+pub fn set_x(x: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_setx);
         b.add_input("X", x);
@@ -550,7 +550,7 @@ pub fn set_x(x: BIB) -> StackBuilder {
     })
 }
 
-pub fn set_y(y: BIB) -> StackBuilder {
+pub fn set_y(y: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_setx);
         b.add_input("Y", y);
@@ -558,7 +558,7 @@ pub fn set_y(y: BIB) -> StackBuilder {
     })
 }
 
-pub fn change_x_by(by: BIB) -> StackBuilder {
+pub fn change_x_by(by: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_changexby);
         b.add_input("DX", by);
@@ -566,7 +566,7 @@ pub fn change_x_by(by: BIB) -> StackBuilder {
     })
 }
 
-pub fn change_y_by(by: BIB) -> StackBuilder {
+pub fn change_y_by(by: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_changeyby);
         b.add_input("DY", by);
@@ -584,7 +584,7 @@ pub fn if_on_edge_bounce() -> StackBuilder {
 ///  - "left-right"
 ///  - "don't rotate"
 ///  - "all around"
-pub fn set_rotation_style(style: BFB) -> StackBuilder {
+pub fn set_rotation_style(style: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_setrotationstyle);
         b.add_field("STYLE", style);
@@ -605,7 +605,7 @@ pub fn x_position() -> StackBuilder {
 }
 
 // Operators ===================================================================
-pub fn add(lhs: BIB, rhs: BIB) -> StackBuilder {
+pub fn add(lhs: Bib, rhs: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::operator_add);
         b.add_input("NUM1", lhs).add_input("NUM2", rhs);
@@ -613,7 +613,7 @@ pub fn add(lhs: BIB, rhs: BIB) -> StackBuilder {
     })
 }
 
-pub fn sub(lhs: BIB, rhs: BIB) -> StackBuilder {
+pub fn sub(lhs: Bib, rhs: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::operator_subtract);
         b.add_input("NUM1", lhs).add_input("NUM2", rhs);
@@ -621,7 +621,7 @@ pub fn sub(lhs: BIB, rhs: BIB) -> StackBuilder {
     })
 }
 
-pub fn mul(lhs: BIB, rhs: BIB) -> StackBuilder {
+pub fn mul(lhs: Bib, rhs: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::operator_multiply);
         b.add_input("NUM1", lhs).add_input("NUM2", rhs);
@@ -629,7 +629,7 @@ pub fn mul(lhs: BIB, rhs: BIB) -> StackBuilder {
     })
 }
 
-pub fn div(lhs: BIB, rhs: BIB) -> StackBuilder {
+pub fn div(lhs: Bib, rhs: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::operator_divide);
         b.add_input("NUM1", lhs).add_input("NUM2", rhs);
@@ -637,7 +637,7 @@ pub fn div(lhs: BIB, rhs: BIB) -> StackBuilder {
     })
 }
 
-pub fn random(from: BIB, to: BIB) -> StackBuilder {
+pub fn random(from: Bib, to: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::operator_random);
         b.add_input("FROM", from).add_input("TO", to);
@@ -645,7 +645,7 @@ pub fn random(from: BIB, to: BIB) -> StackBuilder {
     })
 }
 
-pub fn less_than(lhs: BIB, rhs: BIB) -> StackBuilder {
+pub fn less_than(lhs: Bib, rhs: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::operator_lt);
         b.add_input("OPERAND1", lhs).add_input("OPERAND2", rhs);
@@ -653,7 +653,7 @@ pub fn less_than(lhs: BIB, rhs: BIB) -> StackBuilder {
     })
 }
 
-pub fn greater_than(lhs: BIB, rhs: BIB) -> StackBuilder {
+pub fn greater_than(lhs: Bib, rhs: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::operator_gt);
         b.add_input("OPERAND1", lhs).add_input("OPERAND2", rhs);
@@ -661,7 +661,7 @@ pub fn greater_than(lhs: BIB, rhs: BIB) -> StackBuilder {
     })
 }
 
-pub fn equals(lhs: BIB, rhs: BIB) -> StackBuilder {
+pub fn equals(lhs: Bib, rhs: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::operator_equals);
         b.add_input("OPERAND1", lhs).add_input("OPERAND2", rhs);
@@ -669,7 +669,7 @@ pub fn equals(lhs: BIB, rhs: BIB) -> StackBuilder {
     })
 }
 
-pub fn and(a: BIB, b: BIB) -> StackBuilder {
+pub fn and(a: Bib, b: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut bl = BlockNormalBuilder::new(PrimaryOpCode::operator_and);
         bl.add_input("OPERAND1", a).add_input("OPERAND2", b);
@@ -677,7 +677,7 @@ pub fn and(a: BIB, b: BIB) -> StackBuilder {
     })
 }
 
-pub fn or(a: BIB, b: BIB) -> StackBuilder {
+pub fn or(a: Bib, b: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut bl = BlockNormalBuilder::new(PrimaryOpCode::operator_or);
         bl.add_input("OPERAND1", a).add_input("OPERAND2", b);
@@ -685,7 +685,7 @@ pub fn or(a: BIB, b: BIB) -> StackBuilder {
     })
 }
 
-pub fn not(val: BIB) -> StackBuilder {
+pub fn not(val: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::operator_or);
         b.add_input("OPERAND", val);
@@ -693,7 +693,7 @@ pub fn not(val: BIB) -> StackBuilder {
     })
 }
 
-pub fn join(a: BIB, b: BIB) -> StackBuilder {
+pub fn join(a: Bib, b: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut bl = BlockNormalBuilder::new(PrimaryOpCode::operator_join);
         bl.add_input("STRING1", a).add_input("STRING2", b);
@@ -701,7 +701,7 @@ pub fn join(a: BIB, b: BIB) -> StackBuilder {
     })
 }
 
-pub fn letter_of(idx: BIB, text: BIB) -> StackBuilder {
+pub fn letter_of(idx: Bib, text: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::operator_letter_of);
         b.add_input("LETTER", idx).add_input("STRING", text);
@@ -709,7 +709,7 @@ pub fn letter_of(idx: BIB, text: BIB) -> StackBuilder {
     })
 }
 
-pub fn length_of(text: BIB) -> StackBuilder {
+pub fn length_of(text: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::operator_length);
         b.add_input("STRING", text);
@@ -717,7 +717,7 @@ pub fn length_of(text: BIB) -> StackBuilder {
     })
 }
 
-pub fn contains(text: BIB, contains: BIB) -> StackBuilder {
+pub fn contains(text: Bib, contains: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::operator_contains);
         b.add_input("STRING1", text).add_input("STRING2", contains);
@@ -725,7 +725,7 @@ pub fn contains(text: BIB, contains: BIB) -> StackBuilder {
     })
 }
 
-pub fn modulo(dividend: BIB, divisor: BIB) -> StackBuilder {
+pub fn modulo(dividend: Bib, divisor: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::operator_mod);
         b.add_input("NUM1", dividend).add_input("NUM2", divisor);
@@ -733,7 +733,7 @@ pub fn modulo(dividend: BIB, divisor: BIB) -> StackBuilder {
     })
 }
 
-pub fn round(val: BIB) -> StackBuilder {
+pub fn round(val: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::operator_round);
         b.add_input("NUM", val);
@@ -756,7 +756,7 @@ pub fn round(val: BIB) -> StackBuilder {
 ///  - "log"
 ///  - "e ^"
 ///  - "10 ^"
-pub fn math_op(op: BFB, val: BIB) -> StackBuilder {
+pub fn math_op(op: Bfb, val: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::operator_mathop);
         b.add_input("NUM", val).add_field("OPERATOR", op);
@@ -770,7 +770,7 @@ pub fn math_op(op: BFB, val: BIB) -> StackBuilder {
 ///  - Sprite name
 ///  - "_mouse_"
 ///  - "_edge_"
-pub fn touching(what: BIB) -> StackBuilder {
+pub fn touching(what: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_touchingobject);
         b.add_input("TOUCHINGOBJECTMENU", what);
@@ -783,7 +783,7 @@ pub fn touching(what: BIB) -> StackBuilder {
 ///  - Sprite name
 ///  - "_mouse_"
 ///  - "_edge_"
-pub fn touching_menu(what: BFB) -> StackBuilder {
+pub fn touching_menu(what: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_touchingobjectmenu);
         b.add_field("TOUCHINGOBJECTMENU", what).set_shadow(true);
@@ -791,7 +791,7 @@ pub fn touching_menu(what: BFB) -> StackBuilder {
     })
 }
 
-pub fn touching_color(color: BIB) -> StackBuilder {
+pub fn touching_color(color: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_touchingcolor);
         b.add_input("COLOR", color);
@@ -799,7 +799,7 @@ pub fn touching_color(color: BIB) -> StackBuilder {
     })
 }
 
-pub fn color_touching_color(color_a: BIB, color_b: BIB) -> StackBuilder {
+pub fn color_touching_color(color_a: Bib, color_b: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_coloristouchingcolor);
         b.add_input("COLOR", color_a).add_input("COLOR2", color_b);
@@ -810,7 +810,7 @@ pub fn color_touching_color(color_a: BIB, color_b: BIB) -> StackBuilder {
 /// Accepts:
 ///  - Sprite name
 ///  - "_mouse_"
-pub fn distance_to(what: BIB) -> StackBuilder {
+pub fn distance_to(what: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_coloristouchingcolor);
         b.add_input("DISTANCETOMENU", what);
@@ -822,7 +822,7 @@ pub fn distance_to(what: BIB) -> StackBuilder {
 /// Accepts:
 ///  - Sprite name
 ///  - "_mouse_"
-pub fn distance_to_menu(what: BFB) -> StackBuilder {
+pub fn distance_to_menu(what: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_coloristouchingcolor);
         b.add_field("DISTANCETOMENU", what).set_shadow(true);
@@ -830,7 +830,7 @@ pub fn distance_to_menu(what: BFB) -> StackBuilder {
     })
 }
 
-pub fn ask_and_wait(prompt_message: BIB) -> StackBuilder {
+pub fn ask_and_wait(prompt_message: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_askandwait);
         b.add_input("QUESTION", prompt_message);
@@ -851,7 +851,7 @@ pub fn answer() -> StackBuilder {
 ///  - "down arrow"
 ///  - Number 0 - 9
 ///  - Letter a - z
-pub fn key_pressed(key: BIB) -> StackBuilder {
+pub fn key_pressed(key: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_keypressed);
         b.add_input("KEY_OPTION", key);
@@ -869,7 +869,7 @@ pub fn key_pressed(key: BIB) -> StackBuilder {
 ///  - "down arrow"
 ///  - Number 0 - 9
 ///  - Letter a - z
-pub fn key_menu(key: BIB) -> StackBuilder {
+pub fn key_menu(key: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_keyoptions);
         b.add_input("KEY_OPTION", key).set_shadow(true);
@@ -888,7 +888,7 @@ pub fn mouse_x() -> StackBuilder {
 /// Accepts:
 ///  - "not draggable"
 ///  - "draggable"
-pub fn set_drag_mode(mode: BFB) -> StackBuilder {
+pub fn set_drag_mode(mode: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_setdragmode);
         b.add_field("DRAG_MODE", mode);
@@ -929,7 +929,7 @@ pub fn reset_timer() -> StackBuilder {
 ///      - "costume name"
 ///      - "size"
 ///      - "volume"
-pub fn var_of(var: BFB, what: BIB) -> StackBuilder {
+pub fn var_of(var: Bfb, what: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_of);
         b.add_input("OBJECT", what).add_field("PROPERTY", var);
@@ -941,7 +941,7 @@ pub fn var_of(var: BFB, what: BIB) -> StackBuilder {
 /// `what` Accepts:
 ///   - Sprite name
 ///   - "_stage_"
-pub fn var_of_object_menu(what: BFB) -> StackBuilder {
+pub fn var_of_object_menu(what: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_of_object_menu);
         b.add_field("OBJECT", what).set_shadow(true);
@@ -957,7 +957,7 @@ pub fn var_of_object_menu(what: BFB) -> StackBuilder {
 ///  - "DATE"
 ///  - "MONTH"
 ///  - "YEAR"
-pub fn current_datetime(format: BFB) -> StackBuilder {
+pub fn current_datetime(format: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_current);
         b.add_field("CURRENTMENU", format);
@@ -979,7 +979,7 @@ pub fn username() -> StackBuilder {
 
 /// Accepts:
 ///  - Sound name
-pub fn play_sound_until_done(sound: BIB) -> StackBuilder {
+pub fn play_sound_until_done(sound: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sound_playuntildone);
         b.add_input("SOUND_MENU", sound);
@@ -989,7 +989,7 @@ pub fn play_sound_until_done(sound: BIB) -> StackBuilder {
 
 /// Accepts:
 ///  - Sound name
-pub fn play_sound(sound: BIB) -> StackBuilder {
+pub fn play_sound(sound: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sound_play);
         b.add_input("SOUND_MENU", sound);
@@ -1000,7 +1000,7 @@ pub fn play_sound(sound: BIB) -> StackBuilder {
 /// Uses as argument to [`play_sound_until_done`] and [`play_sound`]
 /// Accepts:
 ///  - Sound name
-pub fn sound_menu(sound: BFB) -> StackBuilder {
+pub fn sound_menu(sound: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sound_sounds_menu);
         b.add_field("SOUND_MENU", sound).set_shadow(true);
@@ -1015,7 +1015,7 @@ pub fn stop_all_sound() -> StackBuilder {
 /// Accepts:
 ///  - "PITCH"
 ///  - "PAN"
-pub fn change_sound_effect_by(effect: BFB, by: BIB) -> StackBuilder {
+pub fn change_sound_effect_by(effect: Bfb, by: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sound_changeeffectby);
         b.add_input("VALUE", by).add_field("EFFECT", effect);
@@ -1026,7 +1026,7 @@ pub fn change_sound_effect_by(effect: BFB, by: BIB) -> StackBuilder {
 /// Accepts:
 ///  - "PITCH"
 ///  - "PAN"
-pub fn set_sound_effect_to(effect: BFB, to: BIB) -> StackBuilder {
+pub fn set_sound_effect_to(effect: Bfb, to: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sound_seteffectto);
         b.add_input("VALUE", to).add_field("EFFECT", effect);
@@ -1038,7 +1038,7 @@ pub fn clear_sound_effects() -> StackBuilder {
     StackBuilder::start(BlockNormalBuilder::new(PrimaryOpCode::sound_cleareffects))
 }
 
-pub fn set_volume_to(volume: BIB) -> StackBuilder {
+pub fn set_volume_to(volume: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sound_setvolumeto);
         b.add_input("VOLUME", volume);
@@ -1046,7 +1046,7 @@ pub fn set_volume_to(volume: BIB) -> StackBuilder {
     })
 }
 
-pub fn change_volume_by(by: BIB) -> StackBuilder {
+pub fn change_volume_by(by: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sound_changeeffectby);
         b.add_input("VOLUME", by);
@@ -1075,7 +1075,7 @@ pub fn global_list<S: Into<String>>(name: S) -> StackBuilder {
     StackBuilder::start_varlist(BlockVarListBuilder::global_list(name))
 }
 
-pub fn set_var_to(var: BFB, to: BIB) -> StackBuilder {
+pub fn set_var_to(var: Bfb, to: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::data_setvariableto);
         b.add_input("VALUE", to).add_field("VARIABLE", var);
@@ -1083,7 +1083,7 @@ pub fn set_var_to(var: BFB, to: BIB) -> StackBuilder {
     })
 }
 
-pub fn change_var_by(var: BFB, by: BIB) -> StackBuilder {
+pub fn change_var_by(var: Bfb, by: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::data_changevariableby);
         b.add_input("VALUE", by).add_field("VARIABLE", var);
@@ -1091,7 +1091,7 @@ pub fn change_var_by(var: BFB, by: BIB) -> StackBuilder {
     })
 }
 
-pub fn show_var(var: BFB) -> StackBuilder {
+pub fn show_var(var: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::data_showvariable);
         b.add_field("VARIABLE", var);
@@ -1099,7 +1099,7 @@ pub fn show_var(var: BFB) -> StackBuilder {
     })
 }
 
-pub fn hide_var(var: BFB) -> StackBuilder {
+pub fn hide_var(var: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::data_hidevariable);
         b.add_field("VARIABLE", var);
@@ -1107,7 +1107,7 @@ pub fn hide_var(var: BFB) -> StackBuilder {
     })
 }
 
-pub fn add_to_list(item: BIB) -> StackBuilder {
+pub fn add_to_list(item: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::data_addtolist);
         b.add_input("ITEM", item);
@@ -1115,7 +1115,7 @@ pub fn add_to_list(item: BIB) -> StackBuilder {
     })
 }
 
-pub fn delete_in_list(list: BFB, idx: BIB) -> StackBuilder {
+pub fn delete_in_list(list: Bfb, idx: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::data_deleteoflist);
         b.add_input("INDEX", idx).add_field("LIST", list);
@@ -1123,7 +1123,7 @@ pub fn delete_in_list(list: BFB, idx: BIB) -> StackBuilder {
     })
 }
 
-pub fn delete_all_in_list(list: BFB) -> StackBuilder {
+pub fn delete_all_in_list(list: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::data_deletealloflist);
         b.add_field("LIST", list);
@@ -1131,7 +1131,7 @@ pub fn delete_all_in_list(list: BFB) -> StackBuilder {
     })
 }
 
-pub fn insert_in_list(list: BFB, idx: BIB, item: BIB) -> StackBuilder {
+pub fn insert_in_list(list: Bfb, idx: Bib, item: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::data_insertatlist);
         b.add_input("INDEX", idx)
@@ -1141,7 +1141,7 @@ pub fn insert_in_list(list: BFB, idx: BIB, item: BIB) -> StackBuilder {
     })
 }
 
-pub fn replace_in_list(list: BFB, idx: BIB, item: BIB) -> StackBuilder {
+pub fn replace_in_list(list: Bfb, idx: Bib, item: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::data_replaceitemoflist);
         b.add_input("INDEX", idx)
@@ -1151,7 +1151,7 @@ pub fn replace_in_list(list: BFB, idx: BIB, item: BIB) -> StackBuilder {
     })
 }
 
-pub fn item_in_list(list: BFB, idx: BIB) -> StackBuilder {
+pub fn item_in_list(list: Bfb, idx: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::data_itemoflist);
         b.add_input("INDEX", idx).add_field("LIST", list);
@@ -1159,7 +1159,7 @@ pub fn item_in_list(list: BFB, idx: BIB) -> StackBuilder {
     })
 }
 
-pub fn count_of_item_in_list(list: BFB, item: BIB) -> StackBuilder {
+pub fn count_of_item_in_list(list: Bfb, item: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::data_itemoflist);
         b.add_input("ITEM", item).add_field("LIST", list);
@@ -1167,7 +1167,7 @@ pub fn count_of_item_in_list(list: BFB, item: BIB) -> StackBuilder {
     })
 }
 
-pub fn length_of_list(list: BFB) -> StackBuilder {
+pub fn length_of_list(list: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::data_lengthoflist);
         b.add_field("LIST", list);
@@ -1175,7 +1175,7 @@ pub fn length_of_list(list: BFB) -> StackBuilder {
     })
 }
 
-pub fn list_contains(list: BFB, item: BIB) -> StackBuilder {
+pub fn list_contains(list: Bfb, item: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::data_listcontainsitem);
         b.add_input("ITEM", item).add_field("LIST", list);
@@ -1183,7 +1183,7 @@ pub fn list_contains(list: BFB, item: BIB) -> StackBuilder {
     })
 }
 
-pub fn show_list(list: BFB) -> StackBuilder {
+pub fn show_list(list: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::data_showlist);
         b.add_field("LIST", list);
@@ -1191,7 +1191,7 @@ pub fn show_list(list: BFB) -> StackBuilder {
     })
 }
 
-pub fn hide_list(list: BFB) -> StackBuilder {
+pub fn hide_list(list: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::data_hidelist);
         b.add_field("LIST", list);

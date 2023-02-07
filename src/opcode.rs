@@ -207,9 +207,9 @@ pub enum PenExtensionOpCode {
 macro_rules! impl_things {
     ($($ty:ty)*) => {
         $(
-            impl Into<OpCode> for $ty {
-                fn into(self) -> OpCode {
-                    self.to_string()
+            impl From<$ty> for OpCode {
+                fn from(t: $ty) -> OpCode {
+                    t.to_string()
                 }
             }
 
