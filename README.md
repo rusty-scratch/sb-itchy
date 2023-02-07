@@ -1,7 +1,7 @@
+hyphen save the day
 # sb-itchy
 
-hyphen save the day
+This is a low level Scratch project builder.
+A core for [**sb-scratchy**](https://github.com/rusty-scratch/sb-scratchy), high level and user friendly abstraction.
 
-Low level Scratch project builder
-
-See [sb-scratchy](https://github.com/rusty-scratch/sb-scratchy) for high level and advanced builder
+If you want to create your own high level Scratch builder, you can have this crate as dependency!
