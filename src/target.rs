@@ -25,79 +25,73 @@ use crate::{
 #[rustfmt::skip]
 #[derive(Debug, Clone, PartialEq)]
 pub struct TargetBuilder {
-    name:            String,
-    variables:       HashMap<String, VariableBuilder>,
-    lists:           HashMap<String, ListBuilder>,
-    broadcasts:      HashMap<String, Uid>,
-    block_stackes:   Vec<StackBuilder>,
-    comments:        HashMap<Uid, Comment>,
-    costumes:        Vec<CostumeBuilder>,
-    sounds:          Vec<SoundBuilder>,
-    current_costume: u64,
-    layer_order:     u64,
-    volume:          f64,
+    pub name:            String,
+    pub variables:       HashMap<String, VariableBuilder>,
+    pub lists:           HashMap<String, ListBuilder>,
+    pub broadcasts:      HashMap<String, Uid>,
+    pub block_stackes:   Vec<StackBuilder>,
+    pub comments:        HashMap<Uid, Comment>,
+    pub costumes:        Vec<CostumeBuilder>,
+    pub sounds:          Vec<SoundBuilder>,
+    pub current_costume: u64,
+    pub layer_order:     u64,
+    pub volume:          f64,
 }
 
 impl TargetBuilder {
-    pub fn new<S: Into<String>>(name: S) -> TargetBuilder {
-        TargetBuilder {
-            name: name.into(),
-            ..Default::default()
-        }
+    pub fn set_name<S: Into<String>>(&mut self, name: S) -> &mut Self {
+        self.name = name.into();
+        self
+    }
+
+    pub fn set_costume(mut self, index: u64) -> Self {
+        self.current_costume = index;
+        self
+    }
+
+    pub fn set_layer_order(mut self, layer: u64) -> Self {
+        self.layer_order = layer;
+        self
     }
 
     pub fn add_variable<S: Into<String>>(
-        mut self,
+        &mut self,
         name: S,
         variable_builder: VariableBuilder,
-    ) -> Self {
+    ) -> &mut Self {
         self.variables.insert(name.into(), variable_builder);
         self
     }
 
-    pub fn add_list<S: Into<String>>(mut self, name: S, list_builder: ListBuilder) -> Self {
+    pub fn add_list<S: Into<String>>(&mut self, name: S, list_builder: ListBuilder) -> &mut Self {
         self.lists.insert(name.into(), list_builder);
         self
     }
 
-    pub fn add_broadcast<S: Into<String>>(mut self, name: S) -> Self {
+    pub fn add_broadcast<S: Into<String>>(&mut self, name: S) -> &mut Self {
         self.broadcasts.insert(name.into(), Uid::generate());
         self
     }
 
-    pub fn add_block_stack(mut self, stack_builder: StackBuilder) -> Self {
+    pub fn add_block_stack(&mut self, stack_builder: StackBuilder) -> &mut Self {
         self.block_stackes.push(stack_builder.into());
         self
     }
 
-    pub fn add_comment(mut self, comment_builder: CommentBuilder) -> Self {
+    pub fn add_comment(&mut self, comment_builder: CommentBuilder) -> &mut Self {
         let comment = comment_builder.build();
         self.comments.insert(Uid::generate(), comment);
         self
     }
 
-    pub fn add_costume(mut self, costume_builder: CostumeBuilder) -> Self {
+    pub fn add_costume(&mut self, costume_builder: CostumeBuilder) -> &mut Self {
         self.costumes.push(costume_builder);
         self
     }
 
-    pub fn add_sound(mut self, sound_builder: SoundBuilder) -> Self {
+    pub fn add_sound(&mut self, sound_builder: SoundBuilder) -> &mut Self {
         self.sounds.push(sound_builder);
         self
-    }
-
-    pub fn current_costume(mut self, index: u64) -> Self {
-        self.current_costume = index;
-        self
-    }
-
-    pub fn layer_order(mut self, layer: u64) -> Self {
-        self.layer_order = layer;
-        self
-    }
-
-    pub(crate) fn broadcasts(&self) -> &HashMap<String, Uid> {
-        &self.broadcasts
     }
 
     /// When global_varlist_buf suppose to be none when the Stage itself is building.
@@ -237,40 +231,34 @@ impl Default for TargetBuilder {
 #[rustfmt::skip]
 #[derive(Debug, Clone, PartialEq)]
 pub struct StageBuilder {
-    target:                  TargetBuilder,
-    tempo:                   i64,
-    video_state:             VideoState,
-    video_transparency:      i64,
-    /// Not availiable yet.
-    /// TODO: do this.
-    text_to_speech_language: (),
+    pub target:                  TargetBuilder,
+    pub tempo:                   i64,
+    pub video_state:             VideoState,
+    pub video_transparency:      i64,
+    // Not availiable yet.
+    // TODO: do this.
+    // text_to_speech_language: (),
 }
 
 impl StageBuilder {
-    pub fn new(target: TargetBuilder) -> StageBuilder {
-        StageBuilder {
-            target,
-            ..Default::default()
-        }
+    pub fn set_set_target(&mut self, target: TargetBuilder) -> &mut Self {
+        self.target = target;
+        self
     }
 
-    pub fn tempo(mut self, tempo: i64) -> Self {
+    pub fn set_tempo(&mut self, tempo: i64) -> &mut Self {
         self.tempo = tempo;
         self
     }
 
-    pub fn video_transparency(mut self, video_transparency: i64) -> Self {
+    pub fn set_video_transparency(&mut self, video_transparency: i64) -> &mut Self {
         self.video_transparency = video_transparency;
         self
     }
 
-    pub fn video_state(mut self, video_state: VideoState) -> Self {
+    pub fn set_video_state(&mut self, video_state: VideoState) -> &mut Self {
         self.video_state = video_state;
         self
-    }
-
-    pub(crate) fn target(&self) -> &TargetBuilder {
-        &self.target
     }
 
     pub fn build(
@@ -283,7 +271,6 @@ impl StageBuilder {
             tempo,
             video_state,
             video_transparency,
-            text_to_speech_language: _,
         } = self;
         let (target, Some(global_var_list)) = target.build(res_buf, None, all_broadcasts) else {
             panic!("stage suppose to return what global var they had");
@@ -301,14 +288,15 @@ impl StageBuilder {
 }
 
 impl Default for StageBuilder {
-    #[rustfmt::skip]
     fn default() -> Self {
         StageBuilder {
-            target:                  TargetBuilder::default(),
-            tempo:                   60,
-            video_state:             VideoState::On,
-            video_transparency:      50,
-            text_to_speech_language: (),
+            target: TargetBuilder {
+                name: "stage".to_owned(),
+                ..Default::default()
+            },
+            tempo: 60,
+            video_state: VideoState::On,
+            video_transparency: 50,
         }
     }
 }
@@ -316,57 +304,61 @@ impl Default for StageBuilder {
 #[rustfmt::skip]
 #[derive(Debug, Clone, PartialEq)]
 pub struct SpriteBuilder {
-    target:         TargetBuilder,
-    visible:        bool,
-    x:              f64,
-    y:              f64,
-    size:           f64,
-    direction:      f64,
-    draggable:      bool,
-    rotation_style: RotationStyle,
+    pub target:         TargetBuilder,
+    pub visible:        bool,
+    pub x:              f64,
+    pub y:              f64,
+    pub size:           f64,
+    pub direction:      f64,
+    pub draggable:      bool,
+    pub rotation_style: RotationStyle,
 }
 
 impl SpriteBuilder {
-    pub fn new(target: TargetBuilder) -> SpriteBuilder {
-        SpriteBuilder {
-            target,
-            ..Default::default()
-        }
+    pub fn set_target(&mut self, target: TargetBuilder) -> &mut Self {
+        self.target = target;
+        self
     }
 
-    pub fn visible(mut self, visible: bool) -> Self {
+    pub fn set_visible(&mut self, visible: bool) -> &mut Self {
         self.visible = visible;
         self
     }
 
-    pub fn pos(mut self, x: f64, y: f64) -> Self {
+    pub fn set_pos(&mut self, x: f64, y: f64) -> &mut Self {
         self.x = x;
         self.y = y;
         self
     }
 
-    pub fn size(mut self, size: f64) -> Self {
+    pub fn set_x(&mut self, x: f64) -> &mut Self {
+        self.x = x;
+        self
+    }
+
+    pub fn set_y(&mut self, y: f64) -> &mut Self {
+        self.y = y;
+        self
+    }
+
+    pub fn set_size(&mut self, size: f64) -> &mut Self {
         self.size = size;
         self
     }
 
-    pub fn direction(mut self, direction: f64) -> Self {
+    pub fn set_direction(&mut self, direction: f64) -> &mut Self {
         self.direction = direction;
         self
     }
 
-    pub fn draggable(mut self, draggable: bool) -> Self {
+    pub fn set_draggable(&mut self, draggable: bool) -> &mut Self {
         self.draggable = draggable;
         self
     }
 
-    pub fn rotation_style(mut self, rotation_style: RotationStyle) -> Self {
+    pub fn set_rotation_style(&mut self, rotation_style: RotationStyle) -> &mut Self {
         self.rotation_style = rotation_style;
         self
-    }
-
-    pub(crate) fn target(&self) -> &TargetBuilder {
-        &self.target
     }
 
     pub fn build(

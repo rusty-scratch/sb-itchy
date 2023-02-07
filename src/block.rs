@@ -20,8 +20,8 @@ pub enum StackOrValue {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct BlockInputBuilder {
-    shadow: ShadowInputType,
-    values: Vec<Option<StackOrValue>>,
+    pub shadow: ShadowInputType,
+    pub values: Vec<Option<StackOrValue>>,
 }
 
 impl BlockInputBuilder {
@@ -32,12 +32,12 @@ impl BlockInputBuilder {
         }
     }
 
-    pub fn shadow(mut self, shadow: ShadowInputType) -> Self {
+    pub fn set_shadow(&mut self, shadow: ShadowInputType) -> &mut Self {
         self.shadow = shadow;
         self
     }
 
-    pub fn input(mut self, input: Option<StackOrValue>) -> Self {
+    pub fn add_input(&mut self, input: Option<StackOrValue>) -> &mut Self {
         self.values.push(input);
         self
     }
@@ -49,9 +49,10 @@ impl BlockInputBuilder {
     ///     .input(Some(StackOrValue::Value(value)))
     /// ```
     pub fn value(value: BlockInputValue) -> Self {
-        BlockInputBuilder::new()
-            .shadow(ShadowInputType::Shadow)
-            .input(Some(StackOrValue::Value(value)))
+        let mut b = BlockInputBuilder::new();
+        b.set_shadow(ShadowInputType::Shadow)
+            .add_input(Some(StackOrValue::Value(value)));
+        b
     }
 
     /// Shortcut for
@@ -61,9 +62,10 @@ impl BlockInputBuilder {
     ///     .input(Some(StackOrValue::Stack(stack)))
     /// ```
     pub fn stack(stack: StackBuilder) -> Self {
-        BlockInputBuilder::new()
-            .shadow(ShadowInputType::NoShadow)
-            .input(Some(StackOrValue::Stack(stack)))
+        let mut b = BlockInputBuilder::new();
+        b.set_shadow(ShadowInputType::NoShadow)
+            .add_input(Some(StackOrValue::Stack(stack)));
+        b
     }
 
     /// Shortcut for
@@ -74,10 +76,11 @@ impl BlockInputBuilder {
     ///     .input(Some(StackOrValue::Value(value)))
     /// ```
     pub fn stack_with_value_obscured(stack: StackBuilder, value: BlockInputValue) -> Self {
-        BlockInputBuilder::new()
-            .shadow(ShadowInputType::ShadowObscured)
-            .input(Some(StackOrValue::Stack(stack)))
-            .input(Some(StackOrValue::Value(value)))
+        let mut b = BlockInputBuilder::new();
+        b.set_shadow(ShadowInputType::ShadowObscured)
+            .add_input(Some(StackOrValue::Stack(stack)))
+            .add_input(Some(StackOrValue::Value(value)));
+        b
     }
 
     pub fn build(
@@ -149,47 +152,66 @@ impl BlockNormalBuilder {
     }
 
     pub fn add_input<K: Into<String>>(
-        mut self,
+        &mut self,
         key: K,
         block_input_builder: BlockInputBuilder,
-    ) -> Self {
+    ) -> &mut Self {
         self.inputs.insert(key.into(), block_input_builder);
         self
     }
 
     pub fn add_field<S: Into<String>>(
-        mut self,
+        &mut self,
         key: S,
         block_field_builder: BlockFieldBuilder,
-    ) -> Self {
+    ) -> &mut Self {
         self.fields.insert(key.into(), block_field_builder);
         self
     }
 
-    pub fn shadow(mut self, is_shadow: bool) -> Self {
+    pub fn set_opcode(&mut self, opcode: OpCode) -> &mut Self {
+        self.opcode = opcode;
+        self
+    }
+
+    pub fn set_comment(&mut self, comment: Option<CommentBuilder>) -> &mut Self {
+        self.comment = comment;
+        self
+    }
+
+    pub fn set_inputs(&mut self, inputs: HashMap<String, BlockInputBuilder>) -> &mut Self {
+        self.inputs = inputs;
+        self
+    }
+
+    pub fn set_fields(&mut self, fields: HashMap<String, BlockFieldBuilder>) -> &mut Self {
+        self.fields = fields;
+        self
+    }
+
+    pub fn set_mutation(&mut self, mutation: BlockMutation) -> &mut Self {
+        self.mutation = Some(mutation);
+        self
+    }
+
+    pub fn set_shadow(&mut self, is_shadow: bool) -> &mut Self {
         self.shadow = is_shadow;
         self
     }
 
-    pub fn comment(mut self, comment_builder: CommentBuilder) -> Self {
-        self.comment = Some(comment_builder);
+    pub fn set_x(&mut self, x: Option<f64>) -> &mut Self {
+        self.x = x;
         self
     }
 
-    pub fn pos(mut self, x: f64, y: f64) -> Self {
-        self.x = Some(x);
-        self.y = Some(y);
+    pub fn set_y(&mut self, y: Option<f64>) -> &mut Self {
+        self.y = y;
         self
     }
 
-    pub fn mut_pos(&mut self, x: f64, y: f64) -> &mut Self {
-        self.x = Some(x);
-        self.y = Some(y);
-        self
-    }
-
-    pub fn mutation(mut self, mutation: BlockMutation) -> Self {
-        self.mutation = Some(mutation);
+    pub fn set_pos(&mut self, x: Option<f64>, y: Option<f64>) -> &mut Self {
+        self.x = x;
+        self.y = y;
         self
     }
 
@@ -268,8 +290,8 @@ pub enum FieldKind {
 
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct BlockFieldBuilder {
-    value: String,
-    kind: FieldKind,
+    pub value: String,
+    pub kind: FieldKind,
 }
 
 impl BlockFieldBuilder {
@@ -282,6 +304,15 @@ impl BlockFieldBuilder {
             value,
             kind: FieldKind::NoRefMaybe,
         }
+    }
+
+    pub fn set_value(&mut self, value: String) -> &mut Self {
+        self.value = value;
+        self
+    }
+    pub fn set_kind(&mut self, kind: FieldKind) -> &mut Self {
+        self.kind = kind;
+        self
     }
 
     pub fn build(self, target_context: &TargetContext) -> BlockField {
@@ -318,21 +349,18 @@ pub enum VarListFrom {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct BlockVarListBuilder {
-    kind: ListOrVariable,
-    from: VarListFrom,
-    name: String,
-    x: f64,
-    y: f64,
-    comment: Option<CommentBuilder>,
+    pub kind: ListOrVariable,
+    pub from: VarListFrom,
+    pub name: String,
+    pub x: f64,
+    pub y: f64,
+    pub comment: Option<CommentBuilder>,
 }
 
 impl BlockVarListBuilder {
-    pub fn global<Name: Into<String>>(
-        var_or_list: ListOrVariable,
-        name: Name,
-    ) -> BlockVarListBuilder {
+    pub fn global_var<S: Into<String>>(name: S) -> BlockVarListBuilder {
         BlockVarListBuilder {
-            kind: var_or_list,
+            kind: ListOrVariable::Variable,
             name: name.into(),
             from: VarListFrom::Global,
             x: 0.,
@@ -341,12 +369,20 @@ impl BlockVarListBuilder {
         }
     }
 
-    pub fn sprite<Name: Into<String>>(
-        var_or_list: ListOrVariable,
-        name: Name,
-    ) -> BlockVarListBuilder {
+    pub fn global_list<S: Into<String>>(name: S) -> BlockVarListBuilder {
         BlockVarListBuilder {
-            kind: var_or_list,
+            kind: ListOrVariable::List,
+            name: name.into(),
+            from: VarListFrom::Global,
+            x: 0.,
+            y: 0.,
+            comment: None,
+        }
+    }
+
+    pub fn sprite_var<S: Into<String>>(name: S) -> BlockVarListBuilder {
+        BlockVarListBuilder {
+            kind: ListOrVariable::Variable,
             from: VarListFrom::Sprite,
             name: name.into(),
             x: 0.,
@@ -355,20 +391,50 @@ impl BlockVarListBuilder {
         }
     }
 
-    pub fn comment(mut self, comment: CommentBuilder) -> BlockVarListBuilder {
-        self.comment = Some(comment);
+    pub fn sprite_list<S: Into<String>>(name: S) -> BlockVarListBuilder {
+        BlockVarListBuilder {
+            kind: ListOrVariable::List,
+            from: VarListFrom::Sprite,
+            name: name.into(),
+            x: 0.,
+            y: 0.,
+            comment: None,
+        }
+    }
+
+    pub fn set_kind(&mut self, kind: ListOrVariable) -> &mut Self {
+        self.kind = kind;
         self
     }
 
-    pub fn pos(mut self, x: f64, y: f64) -> Self {
+    pub fn set_from(&mut self, from: VarListFrom) -> &mut Self {
+        self.from = from;
+        self
+    }
+
+    pub fn set_name(&mut self, name: String) -> &mut Self {
+        self.name = name;
+        self
+    }
+
+    pub fn set_x(&mut self, x: f64) -> &mut Self {
+        self.x = x;
+        self
+    }
+
+    pub fn set_y(&mut self, y: f64) -> &mut Self {
+        self.y = y;
+        self
+    }
+
+    pub fn set_pos(&mut self, x: f64, y: f64) -> &mut Self {
         self.x = x;
         self.y = y;
         self
     }
 
-    pub fn mut_pos(&mut self, x: f64, y: f64) -> &mut Self {
-        self.x = x;
-        self.y = y;
+    pub fn set_comment(&mut self, comment: Option<CommentBuilder>) -> &mut Self {
+        self.comment = comment;
         self
     }
 

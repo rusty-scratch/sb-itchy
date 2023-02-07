@@ -4,9 +4,9 @@ use crate::resource::Resource;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CostumeBuilder {
-    rotation_center_x: i64,
-    rotation_center_y: i64,
-    asset: AssetBuilder,
+    pub rotation_center_x: i64,
+    pub rotation_center_y: i64,
+    pub asset: AssetBuilder,
 }
 
 impl CostumeBuilder {
@@ -18,9 +18,24 @@ impl CostumeBuilder {
         }
     }
 
-    pub fn rotation_center(mut self, x: i64, y: i64) -> Self {
+    pub fn set_rotation_center(&mut self, x: i64, y: i64) -> &mut Self {
         self.rotation_center_x = x;
         self.rotation_center_y = y;
+        self
+    }
+
+    pub fn rotation_center_x(&mut self, x: i64) -> &mut Self {
+        self.rotation_center_x = x;
+        self
+    }
+
+    pub fn rotation_center_y(&mut self, y: i64) -> &mut Self {
+        self.rotation_center_y = y;
+        self
+    }
+
+    pub fn asset(&mut self, asset: AssetBuilder) -> &mut Self {
+        self.asset = asset;
         self
     }
 
@@ -42,13 +57,33 @@ impl CostumeBuilder {
 /// Not really sure what to do here yet
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SoundBuilder {
-    rate: u64,
-    sample_count: u64,
-    format: Option<String>,
-    asset: AssetBuilder,
+    pub rate: u64,
+    pub sample_count: u64,
+    pub format: Option<String>,
+    pub asset: AssetBuilder,
 }
 
 impl SoundBuilder {
+    pub fn rate(&mut self, rate: u64) -> &mut Self {
+        self.rate = rate;
+        self
+    }
+
+    pub fn sample_count(&mut self, sample_count: u64) -> &mut Self {
+        self.sample_count = sample_count;
+        self
+    }
+
+    pub fn format(&mut self, format: Option<String>) -> &mut Self {
+        self.format = format;
+        self
+    }
+
+    pub fn asset(&mut self, asset: AssetBuilder) -> &mut Self {
+        self.asset = asset;
+        self
+    }
+
     pub fn build(self, file_buff: &mut Vec<Resource>) -> Sound {
         let SoundBuilder {
             rate,
@@ -65,11 +100,10 @@ impl SoundBuilder {
     }
 }
 
-/// Not really sure what to do here yet
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AssetBuilder {
-    name: String,
-    resource: Resource,
+    pub name: String,
+    pub resource: Resource,
 }
 
 impl AssetBuilder {

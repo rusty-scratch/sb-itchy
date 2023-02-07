@@ -28,8 +28,8 @@ impl std::fmt::Display for ResourceError {
 /// This might cost some additional memmory but will make the building part uses no result.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Resource {
-    extension: String,
-    content: Vec<u8>,
+    pub extension: String,
+    pub content: Vec<u8>,
     md5_hash: Option<String>,
 }
 

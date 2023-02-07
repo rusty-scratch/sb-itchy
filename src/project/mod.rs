@@ -21,16 +21,12 @@ pub struct ProjectBuilder {
 }
 
 impl ProjectBuilder {
-    pub fn new() -> ProjectBuilder {
-        ProjectBuilder::default()
-    }
-
-    pub fn set_stage(mut self, stage_builder: StageBuilder) -> Self {
+    pub fn set_stage(&mut self, stage_builder: StageBuilder) -> &mut Self {
         self.stage_builder = stage_builder;
         self
     }
 
-    pub fn add_sprite(mut self, sprite_builder: SpriteBuilder) -> Self {
+    pub fn add_sprite(&mut self, sprite_builder: SpriteBuilder) -> &mut Self {
         self.sprite_builders.push(sprite_builder);
         self
     }
@@ -46,14 +42,10 @@ impl ProjectBuilder {
         } = self;
 
         let all_broadcasts: HashMap<String, Uid> = stage_builder
-            .target()
-            .broadcasts()
+            .target
+            .broadcasts
             .iter()
-            .chain(
-                sprite_builders
-                    .iter()
-                    .flat_map(|sb| sb.target().broadcasts()),
-            )
+            .chain(sprite_builders.iter().flat_map(|sb| &sb.target.broadcasts))
             .map(|(name, uid)| (name.clone(), uid.clone()))
             .collect::<HashMap<_, _>>();
 
@@ -86,7 +78,7 @@ impl Default for ProjectBuilder {
             meta: Meta {
                 semver: "3.0.0".to_owned(),
                 vm:     "0.2.0-prerelease.20220222132735".to_owned(),
-                agent:  "mcscratchy/0.1.0".to_owned(),
+                agent:  "sb-itchy/0.1.0".to_owned(),
             },
         }
     }

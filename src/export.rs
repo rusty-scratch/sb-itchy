@@ -36,7 +36,7 @@ impl From<zip::result::ZipError> for ExportError {
 pub fn write_zip<W: Write + Seek>(
     writer: W,
     project: ProjectBuilder,
-) -> Result<usize, zip::result::ZipError> {
+) -> Result<(), zip::result::ZipError> {
     let mut res_buf = vec![];
     let project = project.build(&mut res_buf);
     let mut zip = zip::ZipWriter::new(writer);
@@ -54,8 +54,8 @@ pub fn write_zip<W: Write + Seek>(
             .unwrap(),
         zip::write::FileOptions::default().compression_method(zip::CompressionMethod::Deflated),
     )?;
-    let written = zip.write(&serde_json::to_string_pretty(&project).unwrap().into_bytes())?;
-    Ok(written)
+    let _written = zip.write(&serde_json::to_string_pretty(&project).unwrap().into_bytes())?;
+    Ok(())
 }
 
 pub fn export<P: AsRef<Path>>(project: ProjectBuilder, path: P) -> Result<(), ExportError> {
@@ -64,6 +64,6 @@ pub fn export<P: AsRef<Path>>(project: ProjectBuilder, path: P) -> Result<(), Ex
         .create(true)
         .truncate(true)
         .open(path)?;
-    let _written = write_zip(zip_file, project)?;
+    write_zip(zip_file, project)?;
     Ok(())
 }

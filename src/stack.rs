@@ -10,14 +10,19 @@ use crate::{
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct StackBuilder {
-    stack: Vec<BlockBuilder>,
+    pub stack: Vec<BlockBuilder>,
 }
 
 impl StackBuilder {
+    pub fn new() -> StackBuilder {
+        StackBuilder { stack: Vec::new() }
+    }
+
     pub fn start(block: BlockNormalBuilder) -> StackBuilder {
         StackBuilder::start_with_capacity(1, BlockBuilder::Normal(block))
     }
 
+    /// Varlist is a reporter. You shouldn't continue after this... but nothing disllowed you.
     pub fn start_varlist(block: BlockVarListBuilder) -> StackBuilder {
         StackBuilder::start_with_capacity(1, BlockBuilder::VarList(block))
     }
@@ -33,34 +38,18 @@ impl StackBuilder {
         StackBuilder { stack }
     }
 
-    pub fn new() -> StackBuilder {
-        StackBuilder { stack: Vec::new() }
-    }
-
     pub fn next(mut self, mut next_stack: StackBuilder) -> StackBuilder {
         self.stack.append(&mut next_stack.stack);
         self
     }
 
-    pub fn move_head(mut self, x: f64, y: f64) -> Self {
+    pub fn set_top_block_position(&mut self, x: f64, y: f64) -> &mut Self {
         match &mut self.stack[0] {
             BlockBuilder::Normal(n) => {
-                n.mut_pos(x, y);
+                n.set_pos(Some(x), Some(y));
             }
             BlockBuilder::VarList(vl) => {
-                vl.mut_pos(x, y);
-            }
-        }
-        self
-    }
-
-    pub fn mut_move_head(&mut self, x: f64, y: f64) -> &mut Self {
-        match &mut self.stack[0] {
-            BlockBuilder::Normal(n) => {
-                n.mut_pos(x, y);
-            }
-            BlockBuilder::VarList(vl) => {
-                vl.mut_pos(x, y);
+                vl.set_pos(x, y);
             }
         }
         self

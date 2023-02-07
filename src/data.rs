@@ -3,9 +3,9 @@ use sb_sbity::{list::List, value::Value, variable::Variable};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct VariableBuilder {
-    value: Value,
+    pub value: Value,
     /// Cloud variable can only store number. Becareful!
-    is_cloud_variable: bool,
+    pub is_cloud_variable: bool,
 }
 
 impl VariableBuilder {
@@ -22,6 +22,15 @@ impl VariableBuilder {
             value: starting_value,
             is_cloud_variable: true,
         }
+    }
+
+    pub fn set_value(&mut self, value: Value) -> &mut Self {
+        self.value = value;
+        self
+    }
+    pub fn set_cloud_variable(&mut self, is_cloud_variable: bool) -> &mut Self {
+        self.is_cloud_variable = is_cloud_variable;
+        self
     }
 
     pub fn build(self, name_for_this_var: String) -> (Variable, Uid) {
@@ -41,7 +50,7 @@ impl VariableBuilder {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ListBuilder {
-    values: Vec<Value>,
+    pub values: Vec<Value>,
 }
 
 impl ListBuilder {
