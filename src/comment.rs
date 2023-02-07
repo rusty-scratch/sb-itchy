@@ -78,7 +78,8 @@ impl CommentBuilder {
             minimized,
             content,
         } = self;
-        let comment = Comment {
+        
+        Comment {
             block_id: block_uid.map(|u| u.into_inner()),
             x: x.map(|n| n.into()),
             y: y.map(|n| n.into()),
@@ -86,8 +87,7 @@ impl CommentBuilder {
             height: (height as i64).into(),
             minimized,
             text: content,
-        };
-        comment
+        }
     }
 }
 

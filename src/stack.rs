@@ -8,7 +8,7 @@ use crate::{
     uid::Uid,
 };
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct StackBuilder {
     pub stack: Vec<BlockBuilder>,
 }
@@ -64,7 +64,7 @@ impl StackBuilder {
         let mut stack_b: HashMap<Uid, Block> = HashMap::default();
         let mut self_stack_iter = self.stack.into_iter();
         let first_block = self_stack_iter.next().unwrap().build(
-            &first_block_uid,
+            first_block_uid,
             comment_buff,
             &mut stack_b,
             target_context,

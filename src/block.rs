@@ -130,6 +130,15 @@ impl BlockInputBuilder {
     }
 }
 
+impl Default for BlockInputBuilder {
+    fn default() -> Self {
+        BlockInputBuilder {
+            shadow: ShadowInputType::NoShadow,
+            values: vec![],
+        }
+    }
+}
+
 /// Raw block creation
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct BlockNormalBuilder {

@@ -74,7 +74,7 @@ impl TargetBuilder {
     }
 
     pub fn add_block_stack(&mut self, stack_builder: StackBuilder) -> &mut Self {
-        self.block_stackes.push(stack_builder.into());
+        self.block_stackes.push(stack_builder);
         self
     }
 

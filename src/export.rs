@@ -45,7 +45,7 @@ pub fn write_zip<W: Write + Seek>(
             res.generate_file_name().to_str().unwrap(),
             zip::write::FileOptions::default().compression_method(zip::CompressionMethod::Deflated),
         )?;
-        let _written = zip.write(&res.content())?;
+        let _written = zip.write(res.content())?;
     }
     zip.start_file(
         PathBuf::from("project")
