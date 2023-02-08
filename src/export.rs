@@ -54,7 +54,7 @@ pub fn write_zip<W: Write + Seek>(
             .unwrap(),
         zip::write::FileOptions::default().compression_method(zip::CompressionMethod::Deflated),
     )?;
-    let _written = zip.write(&serde_json::to_string_pretty(&project).unwrap().into_bytes())?;
+    let _written = zip.write(&serde_json::to_string(&project).unwrap().into_bytes())?;
     Ok(())
 }
 
