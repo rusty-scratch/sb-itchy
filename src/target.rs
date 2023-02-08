@@ -44,12 +44,12 @@ impl TargetBuilder {
         self
     }
 
-    pub fn set_costume(mut self, index: u64) -> Self {
+    pub fn set_costume(&mut self, index: u64) -> &mut Self {
         self.current_costume = index;
         self
     }
 
-    pub fn set_layer_order(mut self, layer: u64) -> Self {
+    pub fn set_layer_order(&mut self, layer: u64) -> &mut Self {
         self.layer_order = layer;
         self
     }
@@ -291,7 +291,7 @@ impl Default for StageBuilder {
     fn default() -> Self {
         StageBuilder {
             target: TargetBuilder {
-                name: "stage".to_owned(),
+                name: "Stage".to_owned(),
                 ..Default::default()
             },
             tempo: 60,
