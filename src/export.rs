@@ -58,10 +58,15 @@ pub fn write_zip<W: Write + Seek>(
     Ok(())
 }
 
-pub fn export<P: AsRef<Path>>(project: ProjectBuilder, path: P) -> Result<(), ExportError> {
+pub fn export<P: AsRef<Path>>(
+    project: ProjectBuilder,
+    path: P,
+    create_new: bool,
+) -> Result<(), ExportError> {
     let zip_file = FsFile::options()
         .write(true)
         .create(true)
+        .create_new(create_new)
         .truncate(true)
         .open(path)?;
     write_zip(zip_file, project)?;
