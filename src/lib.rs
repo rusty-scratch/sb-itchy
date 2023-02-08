@@ -1,3 +1,12 @@
+//! Hello there!
+//! Nothing much here be here are some note when building:
+//!  - Scratch won't load if there are layer order collision; make sure all your Sprite have different layer order; Stage should be 0.
+//!  - Scratch also won't load if there are no costume in Sprite or Stage; make sure to have atleast one!
+//!
+//! More documentation will made later if a lot of people actually uses this crate.
+//!
+//! Feel free to ask in github discussion. I will make sure to answer all of you questions if no one do so!
+
 pub mod asset;
 pub mod block;
 pub mod comment;
@@ -35,5 +44,5 @@ pub mod prelude {
         uid::Uid,
     };
     use super::*;
-    pub use sb_sbity::block::ShadowInputType;
+    pub use sb_sbity::block::{BlockInputValue, ShadowInputType};
 }
