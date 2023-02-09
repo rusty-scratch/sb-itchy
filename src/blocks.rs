@@ -1,10 +1,16 @@
+//! Collections of blocks in Scratch
+//!
 //! Blocks that ended with menu is a visual menu in scratch.
 //! It's not required to be use in function argument in here
 //! which might introduce some invalid argument to function that normally requires a menu in the editor.
 //!
 //! Some reserved input (you shouldn't try to name anything with thing in this list):
-//!  - "_random_"
-//!  - "_mouse_"
+//!  - `"_random_"`
+//!  - `"_mouse_"`
+//!  - `"_random_"`
+//!  - `"_mouse_"`
+//!  - `"_edge_"`
+//!  - `"_stage_"`
 //!
 
 use crate::{
@@ -100,10 +106,11 @@ pub fn repeat_until(condition: Bib, to_repeat: Option<Bib>) -> StackBuilder {
     })
 }
 
+/// <br/>
 /// `stop_option` Accepts:
-///  - "this script" and `has_next` should be `false`
-///  - "other scripts in sprite" and `has_next` should be `true`
-///  - "all" and `has_next` should be `false`
+///  - `"this script"` and `has_next` should be `false`
+///  - `"other scripts in sprite"` and `has_next` should be `true`
+///  - `"all"` and `has_next` should be `false`
 pub fn stop(stop_option: Bfb, has_next: bool) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::control_stop);
@@ -123,6 +130,7 @@ pub fn when_i_start_as_a_clone() -> StackBuilder {
     ))
 }
 
+/// <br/>
 /// Accepts:
 ///  - Sprite name
 pub fn create_clone_of(sprite: Bib) -> StackBuilder {
@@ -133,7 +141,8 @@ pub fn create_clone_of(sprite: Bib) -> StackBuilder {
     })
 }
 
-/// Uses as argument to [`create_clone_of`]
+/// Uses as an argument to [`create_clone_of`]
+///
 /// Accepts:
 ///  - Sprite name
 pub fn create_clone_of_menu(sprite: Bfb) -> StackBuilder {
@@ -157,13 +166,14 @@ pub fn when_flag_clicked() -> StackBuilder {
     ))
 }
 
+/// <br/>
 /// Accepts:
-///  - "any"
-///  - "space"
-///  - "left arrow"
-///  - "right arrow"
-///  - "up arrow"
-///  - "down arrow"
+///  - `"any"`
+///  - `"space"`
+///  - `"left arrow"`
+///  - `"right arrow"`
+///  - `"up arrow"`
+///  - `"down arrow"`
 ///  - Number 0 - 9
 ///  - Letter a - z
 pub fn when_key_pressed(key: Bfb) -> StackBuilder {
@@ -180,6 +190,7 @@ pub fn when_this_sprite_clicked() -> StackBuilder {
     ))
 }
 
+/// <br/>
 /// Accepts:
 ///  - Backdrop name
 pub fn when_backdrop_switches_to(backdrop: Bfb) -> StackBuilder {
@@ -190,9 +201,10 @@ pub fn when_backdrop_switches_to(backdrop: Bfb) -> StackBuilder {
     })
 }
 
+/// <br/>
 /// Accepts:
-/// - "LOUDNESS"
-/// - "TIMER"
+/// - `"LOUDNESS"`
+/// - `"TIMER"`
 pub fn when_greater_than(variable: Bfb, value: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::event_whengreaterthan);
@@ -259,6 +271,7 @@ pub fn say_for_secs(message: Bib, secs: Bib) -> StackBuilder {
     })
 }
 
+/// <br/>
 /// Accepts:
 ///  - Costume name
 pub fn switch_costume_to(costume: Bib) -> StackBuilder {
@@ -269,7 +282,8 @@ pub fn switch_costume_to(costume: Bib) -> StackBuilder {
     })
 }
 
-/// Uses as argument to [`switch_costume_to`]
+/// Uses as an argument to [`switch_costume_to`]
+///
 /// Accepts:
 ///  - Costume name
 pub fn costume_menu(costume: Bfb) -> StackBuilder {
@@ -284,6 +298,7 @@ pub fn next_costume() -> StackBuilder {
     StackBuilder::start(BlockNormalBuilder::new(PrimaryOpCode::looks_nextcostume))
 }
 
+/// <br/>
 /// Accepts:
 ///  - Costume name
 pub fn switch_backdrop_to(backdrop: Bib) -> StackBuilder {
@@ -294,7 +309,8 @@ pub fn switch_backdrop_to(backdrop: Bib) -> StackBuilder {
     })
 }
 
-/// Uses as argument to [`switch_backdrop_to`]
+/// Uses as an argument to [`switch_backdrop_to`]
+///
 /// Accepts:
 ///  - Backdrop name
 pub fn backdrop_menu(backdrop: Bfb) -> StackBuilder {
@@ -326,14 +342,15 @@ pub fn set_size_to(to: Bib) -> StackBuilder {
     })
 }
 
+/// <br/>
 /// Accepts
-///  - "COLOR"
-///  - "FISHEYE"
-///  - "WHIRL"
-///  - "PIXELATE"
-///  - "MOSAIC"
-///  - "BRIGHTNESS"
-///  - "GHOST"
+///  - `"COLOR"`
+///  - `"FISHEYE"`
+///  - `"WHIRL"`
+///  - `"PIXELATE"`
+///  - `"MOSAIC"`
+///  - `"BRIGHTNESS"`
+///  - `"GHOST"`
 pub fn change_looks_effect_by(effect: Bfb, by: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_changeeffectby);
@@ -342,14 +359,15 @@ pub fn change_looks_effect_by(effect: Bfb, by: Bib) -> StackBuilder {
     })
 }
 
+/// <br/>
 /// Accepts
-///  - "COLOR"
-///  - "FISHEYE"
-///  - "WHIRL"
-///  - "PIXELATE"
-///  - "MOSAIC"
-///  - "BRIGHTNESS"
-///  - "GHOST"
+///  - `"COLOR"`
+///  - `"FISHEYE"`
+///  - `"WHIRL"`
+///  - `"PIXELATE"`
+///  - `"MOSAIC"`
+///  - `"BRIGHTNESS"`
+///  - `"GHOST"`
 pub fn set_looks_effect_to(effect: Bfb, to: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_seteffectto);
@@ -372,9 +390,10 @@ pub fn hide() -> StackBuilder {
     StackBuilder::start(BlockNormalBuilder::new(PrimaryOpCode::looks_hide))
 }
 
+/// <br/>
 /// Accepts:
-///  - "front"
-///  - "back"
+///  - `"front"`
+///  - `"back"`
 pub fn go_to_layer(layer: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_gotofrontback);
@@ -383,9 +402,10 @@ pub fn go_to_layer(layer: Bfb) -> StackBuilder {
     })
 }
 
+/// <br/>
 /// `layer` Accepts:
-///  - "foward"
-///  - "backward"
+///  - `"foward"`
+///  - `"backward"`
 pub fn change_layer(layer: Bfb, by: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_goforwardbackwardlayers);
@@ -394,9 +414,10 @@ pub fn change_layer(layer: Bfb, by: Bib) -> StackBuilder {
     })
 }
 
+/// <br/>
 /// Accepts:
-/// - "number"
-/// - "name"
+/// - `"number"`
+/// - `"name"`
 pub fn costume(return_type: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_costumenumbername);
@@ -405,9 +426,10 @@ pub fn costume(return_type: Bfb) -> StackBuilder {
     })
 }
 
+/// <br/>
 /// Accepts:
-/// - "number"
-/// - "name"
+/// - `"number"`
+/// - `"name"`
 pub fn backdrop(return_type: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::looks_backdropnumbername);
@@ -445,10 +467,11 @@ pub fn turn_left(degress: Bib) -> StackBuilder {
     })
 }
 
+/// <br/>
 /// Accepts:
 ///  - Sprite name
-///  - "_mouse_" go to mouse position
-///  - "_random_" go to random position
+///  - `"_mouse_"` go to mouse position
+///  - `"_random_"` go to random position
 pub fn go_to(to: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_goto);
@@ -457,11 +480,12 @@ pub fn go_to(to: Bib) -> StackBuilder {
     })
 }
 
-/// Uses as argument to [`goto`]
+/// Uses as an argument to [`goto`]
+///
 /// Accepts:
 ///  - Sprite name
-///  - "_mouse_" go to mouse position
-///  - "_random_" go to random position
+///  - `"_mouse_"` go to mouse position
+///  - `"_random_"` go to random position
 pub fn go_to_menu(to: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_goto_menu);
@@ -478,10 +502,11 @@ pub fn goto_xy(x: Bib, y: Bib) -> StackBuilder {
     })
 }
 
+/// <br/>
 /// Accepts:
 ///  - Sprite name
-///  - "_mouse_" glide to mouse position
-///  - "_random_" glide to random position
+///  - `"_mouse_"` glide to mouse position
+///  - `"_random_"` glide to random position
 pub fn glide_to(duration_secs: Bib, to: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_gotoxy);
@@ -491,10 +516,11 @@ pub fn glide_to(duration_secs: Bib, to: Bib) -> StackBuilder {
 }
 
 /// Uses as an argument for [`glide_to`] in `to`
+///
 /// Accepts:
 ///  - Sprite name
-///  - "_mouse_" glide to mouse position
-///  - "_random_" glide to random position
+///  - `"_mouse_"` glide to mouse position
+///  - `"_random_"` glide to random position
 pub fn glide_to_menu(to: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_glideto_menu);
@@ -519,9 +545,10 @@ pub fn point_in_direction(direction: Bib) -> StackBuilder {
     })
 }
 
+/// <br/>
 /// Accepts:
 ///  - Sprite name
-///  - "_mouse_" glide to mouse position
+///  - `"_mouse_"` glide to mouse position
 pub fn point_towards(towards: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_pointtowards);
@@ -531,9 +558,10 @@ pub fn point_towards(towards: Bib) -> StackBuilder {
 }
 
 /// Uses as an argument for [`point_towards`]
+///
 /// Accepts:
 ///  - Sprite name
-///  - "_mouse_" glide to mouse position
+///  - `"_mouse_"` glide to mouse position
 pub fn point_towards_menu(towards: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_pointtowards_menu);
@@ -580,10 +608,11 @@ pub fn if_on_edge_bounce() -> StackBuilder {
     ))
 }
 
+/// <br/>
 /// Accepts:
-///  - "left-right"
-///  - "don't rotate"
-///  - "all around"
+///  - `"left-right"`
+///  - `"don't rotate"`
+///  - `"all around"`
 pub fn set_rotation_style(style: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::motion_setrotationstyle);
@@ -741,21 +770,22 @@ pub fn round(val: Bib) -> StackBuilder {
     })
 }
 
+/// <br/>
 /// `op` Accepts:
-///  - "abs"
-///  - "floor"
-///  - "ceiling"
-///  - "sqrt"
-///  - "sin"
-///  - "cos"
-///  - "tan"
-///  - "asin"
-///  - "acos"
-///  - "atan"
-///  - "ln"
-///  - "log"
-///  - "e ^"
-///  - "10 ^"
+///  - `"abs"`
+///  - `"floor"`
+///  - `"ceiling"`
+///  - `"sqrt"`
+///  - `"sin"`
+///  - `"cos"`
+///  - `"tan"`
+///  - `"asin"`
+///  - `"acos"`
+///  - `"atan"`
+///  - `"ln"`
+///  - `"log"`
+///  - `"e ^"`
+///  - `"10 ^"`
 pub fn math_op(op: Bfb, val: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::operator_mathop);
@@ -766,10 +796,11 @@ pub fn math_op(op: Bfb, val: Bib) -> StackBuilder {
 
 // Sensing =====================================================================
 
+/// <br/>
 /// Accepts:
 ///  - Sprite name
-///  - "_mouse_"
-///  - "_edge_"
+///  - `"_mouse_"`
+///  - `"_edge_"`
 pub fn touching(what: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_touchingobject);
@@ -778,11 +809,12 @@ pub fn touching(what: Bib) -> StackBuilder {
     })
 }
 
-/// Uses as argument to [`touching`]
+/// Uses as an argument to [`touching`]
+///
 /// Accepts:
 ///  - Sprite name
-///  - "_mouse_"
-///  - "_edge_"
+///  - `"_mouse_"`
+///  - `"_edge_"`
 pub fn touching_menu(what: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_touchingobjectmenu);
@@ -807,9 +839,10 @@ pub fn color_touching_color(color_a: Bib, color_b: Bib) -> StackBuilder {
     })
 }
 
+/// <br/>
 /// Accepts:
 ///  - Sprite name
-///  - "_mouse_"
+///  - `"_mouse_"`
 pub fn distance_to(what: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_coloristouchingcolor);
@@ -818,10 +851,11 @@ pub fn distance_to(what: Bib) -> StackBuilder {
     })
 }
 
-/// Uses as argument to [`distance_to`]
+/// Uses as an argument to [`distance_to`]
+///
 /// Accepts:
 ///  - Sprite name
-///  - "_mouse_"
+///  - `"_mouse_"`
 pub fn distance_to_menu(what: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_coloristouchingcolor);
@@ -842,13 +876,14 @@ pub fn answer() -> StackBuilder {
     StackBuilder::start(BlockNormalBuilder::new(PrimaryOpCode::sensing_answer))
 }
 
+/// <br/>
 /// Accepts:
-///  - "any"
-///  - "space"
-///  - "left arrow"
-///  - "right arrow"
-///  - "up arrow"
-///  - "down arrow"
+///  - `"any"`
+///  - `"space"`
+///  - `"left arrow"`
+///  - `"right arrow"`
+///  - `"up arrow"`
+///  - `"down arrow"`
 ///  - Number 0 - 9
 ///  - Letter a - z
 pub fn key_pressed(key: Bib) -> StackBuilder {
@@ -859,14 +894,15 @@ pub fn key_pressed(key: Bib) -> StackBuilder {
     })
 }
 
-/// Uses as argument to [`key_pressed`]
+/// Uses as an argument to [`key_pressed`]
+///
 /// Accepts:
-///  - "any"
-///  - "space"
-///  - "left arrow"
-///  - "right arrow"
-///  - "up arrow"
-///  - "down arrow"
+///  - `"any"`
+///  - `"space"`
+///  - `"left arrow"`
+///  - `"right arrow"`
+///  - `"up arrow"`
+///  - `"down arrow"`
 ///  - Number 0 - 9
 ///  - Letter a - z
 pub fn key_menu(key: Bib) -> StackBuilder {
@@ -885,9 +921,10 @@ pub fn mouse_x() -> StackBuilder {
     StackBuilder::start(BlockNormalBuilder::new(PrimaryOpCode::sensing_mousex))
 }
 
+/// <br/>
 /// Accepts:
-///  - "not draggable"
-///  - "draggable"
+///  - `"not draggable"`
+///  - `"draggable"`
 pub fn set_drag_mode(mode: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_setdragmode);
@@ -908,27 +945,30 @@ pub fn reset_timer() -> StackBuilder {
     StackBuilder::start(BlockNormalBuilder::new(PrimaryOpCode::sensing_resettimer))
 }
 
+/// <br/>
 /// `what` Accepts:
 ///   - Sprite name
-///   - "_stage_"
+///   - `"_stage_"`
 ///
 /// If `what` is "_stage_"
+/// <br/>
 ///    `var` Accepts:
 ///      - Stage's custom variable name
-///      - "backdrop #"
-///      - "backdrop name"
-///      - "volume"
+///      - `"backdrop #"`
+///      - `"backdrop name"`
+///      - `"volume"`
 ///
 /// Else `what` is a Sprite name
+/// <br/>
 ///    `var` Accepts:
 ///      - That sprite's custome variable name
-///      - "x position"
-///      - "y position"
-///      - "direction"
-///      - "costume #"
-///      - "costume name"
-///      - "size"
-///      - "volume"
+///      - `"x position"`
+///      - `"y position"`
+///      - `"direction"`
+///      - `"costume #"`
+///      - `"costume name"`
+///      - `"size"`
+///      - `"volume"`
 pub fn var_of(var: Bfb, what: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_of);
@@ -937,10 +977,11 @@ pub fn var_of(var: Bfb, what: Bib) -> StackBuilder {
     })
 }
 
-/// Uses as argument to [`var_of`]
+/// Uses as an argument to [`var_of`]
+///
 /// `what` Accepts:
 ///   - Sprite name
-///   - "_stage_"
+///   - `"_stage_"`
 pub fn var_of_object_menu(what: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_of_object_menu);
@@ -949,14 +990,15 @@ pub fn var_of_object_menu(what: Bfb) -> StackBuilder {
     })
 }
 
+/// <br/>
 /// Accepts:
-///  - "SECOND"
-///  - "MINUTE"
-///  - "HOUR"
-///  - "DAYOFWEEK"
-///  - "DATE"
-///  - "MONTH"
-///  - "YEAR"
+///  - `"SECOND"`
+///  - `"MINUTE"`
+///  - `"HOUR"`
+///  - `"DAYOFWEEK"`
+///  - `"DATE"`
+///  - `"MONTH"`
+///  - `"YEAR"`
 pub fn current_datetime(format: Bfb) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sensing_current);
@@ -977,6 +1019,7 @@ pub fn username() -> StackBuilder {
 
 // Sound =======================================================================
 
+/// <br/>
 /// Accepts:
 ///  - Sound name
 pub fn play_sound_until_done(sound: Bib) -> StackBuilder {
@@ -987,6 +1030,7 @@ pub fn play_sound_until_done(sound: Bib) -> StackBuilder {
     })
 }
 
+/// <br/>
 /// Accepts:
 ///  - Sound name
 pub fn play_sound(sound: Bib) -> StackBuilder {
@@ -997,7 +1041,8 @@ pub fn play_sound(sound: Bib) -> StackBuilder {
     })
 }
 
-/// Uses as argument to [`play_sound_until_done`] and [`play_sound`]
+/// Uses as an argument to [`play_sound_until_done`] and [`play_sound`]
+///
 /// Accepts:
 ///  - Sound name
 pub fn sound_menu(sound: Bfb) -> StackBuilder {
@@ -1012,9 +1057,10 @@ pub fn stop_all_sound() -> StackBuilder {
     StackBuilder::start(BlockNormalBuilder::new(PrimaryOpCode::sound_stopallsounds))
 }
 
+/// <br/>
 /// Accepts:
-///  - "PITCH"
-///  - "PAN"
+///  - `"PITCH"`
+///  - `"PAN"`
 pub fn change_sound_effect_by(effect: Bfb, by: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sound_changeeffectby);
@@ -1023,9 +1069,10 @@ pub fn change_sound_effect_by(effect: Bfb, by: Bib) -> StackBuilder {
     })
 }
 
+/// <br/>
 /// Accepts:
-///  - "PITCH"
-///  - "PAN"
+///  - `"PITCH"`
+///  - `"PAN"`
 pub fn set_sound_effect_to(effect: Bfb, to: Bib) -> StackBuilder {
     StackBuilder::start({
         let mut b = BlockNormalBuilder::new(PrimaryOpCode::sound_seteffectto);

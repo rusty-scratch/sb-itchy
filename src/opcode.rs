@@ -1,10 +1,10 @@
-//! Module to deal with Scratch opcode
-
+//! Scratch opcodes
+//!
 //! TODO: Add opcode for other extesion
 //! Opcode is type of thing this scratch block refers to.
 //! Ex.
-//! - [`OpCode::motion_movesteps`] is use in [crate::block::Block] that mean this block is a "move steps" block.
-//! - [`OpCode::data_listcontents`] is use in [crate::monitor::Monitor] that mean this monitor is a monitor that display content of a list.
+//! - [`PrimaryOpCode::motion_movesteps`] is use in [crate::block::Block] that mean this block is a "move steps" block.
+//! - [`PrimaryOpCodee::data_listcontents`] is use in [crate::monitor::Monitor] that mean this monitor is a monitor that display content of a list.
 
 #![allow(unused)]
 
@@ -13,6 +13,7 @@ use sb_sbity::value::OpCode;
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PrimaryOpCode {
+    // i love regex
     control_forever,
     control_repeat,
     control_if,
