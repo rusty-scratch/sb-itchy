@@ -12,7 +12,7 @@ use sb_sbity::value::OpCode;
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum PrimaryOpCode {
+pub enum StandardOpCode {
     // i love regex
     control_forever,
     control_repeat,
@@ -223,4 +223,4 @@ macro_rules! impl_things {
     };
 }
 
-impl_things! { PrimaryOpCode PenExtensionOpCode }
+impl_things! { StandardOpCode PenExtensionOpCode }

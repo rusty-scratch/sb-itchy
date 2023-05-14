@@ -24,6 +24,7 @@ pub mod build_context;
 pub mod export;
 pub mod import;
 
+pub mod block_definer;
 pub mod blocks;
 
 pub mod prelude {
@@ -36,7 +37,7 @@ pub mod prelude {
         build_context::{GlobalVarListContext, TargetContext},
         comment::CommentBuilder,
         data::{ListBuilder, VariableBuilder},
-        opcode::PrimaryOpCode,
+        opcode::StandardOpCode,
         project::ProjectBuilder,
         resource::{Resource, ResourceError},
         stack::StackBuilder,
