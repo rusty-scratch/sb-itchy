@@ -13,3 +13,13 @@ rand = "0.8.5"
 sb-sbity = { git = "https://github.com/rusty-scratch/sb-sbity" }
 serde_json = "1.0.91"
 zip = "0.6.3"
+sb-block-def-genie = { git = "https://github.com/rusty-scratch/sb-block-def-genie", optional = true }
+git2 = { version = "0.17.1", optional = true}
+
+[build-dependencies]
+sb-block-def-genie = { git = "https://github.com/rusty-scratch/sb-block-def-genie", optional = true }
+
+[features]
+default = []
+block-definer = ["dep:sb-block-def-genie"]
+blocks = ["dep:git2", "block-definer"]

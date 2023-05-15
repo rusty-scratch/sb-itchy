@@ -26,6 +26,7 @@ pub mod import;
 
 pub mod block_definer;
 pub mod blocks;
+pub mod blocks_generated;
 
 pub mod prelude {
     pub use self::{
