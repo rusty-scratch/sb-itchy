@@ -7,6 +7,8 @@
 //!
 //! Feel free to ask in github discussion. I will make sure to answer all of you questions if no one do so!
 
+use std::borrow::Cow;
+
 pub mod asset;
 pub mod block;
 pub mod comment;
@@ -24,8 +26,45 @@ pub mod build_context;
 pub mod export;
 pub mod import;
 
-pub mod block_definer;
 pub mod blocks;
+
+/// Allow user to pick how they want their thing to be builded.
+#[derive(Debug, Default, PartialEq, Eq, Clone, Copy, PartialOrd, Ord, Hash)]
+enum BuildMethod {
+    /// Try to make the result like you're working in Scratch Editor.
+    /// This is commonly used for generating monitors, and maybe resolving field blocks if you're not already inserting one.
+    /// But not sure if I actually will implement those.
+    Fancy,
+    /// Build as is. What you pass in there for build will spat right out as that.
+    /// Some thing may looks off.
+    /// Will return error in some cases (Most won't).
+    #[default]
+    AsIs,
+    /// Try to build as is and ignore any error.
+    /// May cause the project to be unloadable by Scratch,
+    /// but if used properly may grant you the power of funny shenanigan.
+    ForcedAsIs,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone)]
+pub struct BuildWarnings(pub Vec<Cow<'static, str>>);
+
+pub trait Build {
+    type Builded;
+    type BuildError;
+    type CheckResult;
+
+    fn build(self) -> Result<(Self::Builded, BuildWarnings), (Self::BuildError, BuildWarnings)>;
+
+    /// Check if there will be any error when build
+    fn check(&self, with_method: BuildMethod) -> Option<Self::CheckResult>;
+    /// Get currently assigned build method
+    fn current_build_method(&self) -> BuildMethod;
+    /// Make current builder uses this passed method
+    fn set_build_method(&mut self, method: BuildMethod);
+    /// Make current builder uses this passed method and also their
+    fn set_build_method_recursive(&mut self, method: BuildMethod);
+}
 
 pub mod prelude {
     pub use self::{
