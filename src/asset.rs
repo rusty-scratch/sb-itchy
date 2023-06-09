@@ -117,7 +117,12 @@ impl AssetBuilder {
     pub fn build(self, res_buf: &mut Vec<Resource>) -> Asset {
         let AssetBuilder { name, mut resource } = self;
         let extension = resource.extension().to_owned();
-        let md5_hash = resource.get_or_compute_md5_hash();
+        let md5_hash = if let Some(md5_hash) = resource.md5_hash() {
+            md5_hash
+        } else {
+            resource.compute_md5_hash();
+            resource.md5_hash().unwrap()
+        };
         let asset = Asset {
             asset_id: md5_hash.to_owned(),
             name,
