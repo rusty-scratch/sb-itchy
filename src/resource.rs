@@ -65,10 +65,12 @@ impl Resource {
 
     /// PathBuf is always valid utf8
     pub fn generate_file_name(&mut self) -> PathBuf {
-        let mut path = PathBuf::from(self.md5_hash().unwrap_or({
+        let mut path = PathBuf::from(if let Some(md5_hash) = self.md5_hash() {
+            md5_hash
+        } else {
             self.compute_md5_hash();
             self.md5_hash().unwrap()
-        }));
+        });
         path.set_extension(&self.extension);
         path
     }
