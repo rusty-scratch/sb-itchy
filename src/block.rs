@@ -268,7 +268,7 @@ impl BlockNormalBuilder {
             }
             None => None,
         };
-        
+
         BlockNormal {
             opcode,
             comment,
@@ -340,7 +340,8 @@ impl BlockFieldBuilder {
             FieldKind::SpriteList => target_context.this_sprite_lists,
             FieldKind::GlobalList => target_context.global_lists,
         }
-        .get(value_str).cloned()
+        .get(value_str)
+        .cloned()
         .unwrap_or_else(|| Uid::new("__unknown__"));
         BlockField::WithId {
             value,
@@ -466,7 +467,8 @@ impl BlockVarListBuilder {
             (ListOrVariable::List, VarListFrom::Global) => target_context.global_lists,
             (ListOrVariable::List, VarListFrom::Sprite) => target_context.this_sprite_lists,
         }
-        .get(&name).cloned()
+        .get(&name)
+        .cloned()
         .unwrap_or(Uid::new("__unknown__"));
         if let Some(comment) = comment {
             let comment_uid = Uid::generate();
@@ -474,7 +476,7 @@ impl BlockVarListBuilder {
             comment.block_id = Some(my_uid.clone().into_inner());
             comment_buff.insert(comment_uid, comment);
         }
-        
+
         BlockVarListReporterTop {
             kind,
             name,
