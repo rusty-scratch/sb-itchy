@@ -1,9 +1,11 @@
 use std::collections::HashMap;
 
 use crate::{
+    build_context::ProjectContext,
     resource::Resource,
     target::{SpriteBuilder, StageBuilder},
     uid::Uid,
+    Build, BuildMethod, BuildReport,
 };
 use sb_sbity::{
     monitor::Monitor,
@@ -18,6 +20,7 @@ pub struct ProjectBuilder {
     pub sprite_builders: Vec<SpriteBuilder>,
     pub monitors:        Vec<Monitor>,
     pub meta:            Meta,
+    pub build_method:    BuildMethod,
 }
 
 impl ProjectBuilder {
@@ -32,13 +35,21 @@ impl ProjectBuilder {
     }
 }
 
-impl ProjectBuilder {
-    pub fn build(self, res_buf: &mut Vec<Resource>) -> Project {
+impl Build for ProjectBuilder {
+    type Builded = Project;
+    type BuildError = void::Void;
+    type Context = ProjectContext;
+
+    fn build(
+        self,
+        project_context: ProjectContext,
+    ) -> (Result<Self::Builded, Self::BuildError>, BuildReport) {
         let ProjectBuilder {
             stage_builder,
             sprite_builders,
             monitors,
             meta,
+            build_method,
         } = self;
 
         let all_broadcasts: HashMap<String, Uid> = stage_builder
@@ -59,12 +70,29 @@ impl ProjectBuilder {
                 &all_broadcasts,
             ))
         }));
-        Project {
+        let project = Project {
             meta,
             extensions: serde_json::value::Value::Array(vec![]),
             monitors,
             targets,
-        }
+        };
+        (Ok(project), BuildReport::new())
+    }
+
+    fn check(&self, with_method: BuildMethod) -> (Option<Self::BuildError>, BuildReport) {
+        (None, BuildReport::new())
+    }
+
+    fn build_method(&self) -> BuildMethod {
+        self.build_method
+    }
+
+    fn set_build_method_to(&mut self, method: BuildMethod) {
+        self.build_method = method
+    }
+
+    fn set_build_method_recursivly_to(&mut self, method: BuildMethod) {
+        self.set_build_method_to(method)
     }
 }
 
