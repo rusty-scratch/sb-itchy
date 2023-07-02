@@ -53,7 +53,7 @@ pub enum BuildMethod {
 struct BuildReport {
     /// Error that occurred but do not prevent the build from failing completely.
     ///
-    /// Note: Error in `Result` enum in build trait `build` function is a hard error. (kinda like a panic maybe)
+    /// Note: Error in `Result` enum in the build trait, `Build::build` function is a hard error. (kinda like a panic maybe)
     /// Prevents build from finishing in that builder completely.
     pub soft_errors: Vec<Cow<'static, str>>,
     /// Warning
@@ -68,12 +68,22 @@ impl BuildReport {
         }
     }
 
-    pub fn add_soft_error<S: Into<Cow<'static, str>>>(&mut self, message: S) {
+    pub fn mut_add_soft_error<S: Into<Cow<'static, str>>>(&mut self, message: S) {
         self.soft_errors.push(message.into())
     }
 
-    pub fn add_warning<S: Into<Cow<'static, str>>>(&mut self, message: S) {
+    pub fn mut_add_warning<S: Into<Cow<'static, str>>>(&mut self, message: S) {
         self.soft_errors.push(message.into())
+    }
+
+    pub fn add_soft_error<S: Into<Cow<'static, str>>>(mut self, message: S) -> Self {
+        self.mut_add_soft_error(message);
+        self
+    }
+
+    pub fn add_warning<S: Into<Cow<'static, str>>>(mut self, message: S) -> Self {
+        self.mut_add_warning(message);
+        self
     }
 
     pub fn is_empty(&self) -> bool {
