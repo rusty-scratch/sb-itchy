@@ -1,22 +1,26 @@
-use crate::uid::Uid;
+use crate::{
+    build::{Build, BuildMethod, BuildReport},
+    uid::Uid,
+};
 use sb_sbity::comment::Comment;
 
 #[rustfmt::skip]
 #[derive(Debug, Clone, PartialEq)]
 pub struct CommentBuilder {
-    pub block_uid: Option<Uid>,
-    pub x:         Option<f64>,
-    pub y:         Option<f64>,
-    pub width:     u64,
-    pub height:    u64,
-    pub minimized: bool,
-    pub content:   String,
+    block_uid:    Option<Uid>,
+    x:            Option<f64>,
+    y:            Option<f64>,
+    width:        u64,
+    height:       u64,
+    minimized:    bool,
+    content:      String,
+
+    build_method: BuildMethod,
 }
 
 impl CommentBuilder {
-    pub fn new<S: Into<String>>(content: S) -> CommentBuilder {
+    pub fn new() -> CommentBuilder {
         CommentBuilder {
-            content: content.into(),
             ..Default::default()
         }
     }
@@ -62,13 +66,14 @@ impl CommentBuilder {
         self.minimized = minimized;
         self
     }
+}
 
-    /// Requires:
-    /// - block_uid?: To connect the block with comment
-    ///
-    /// Returns:
-    /// - [`Uid`]: [`Uid`] of the built comment inside [`Target`]'s comment list
-    pub fn build(self) -> Comment {
+impl Build for CommentBuilder {
+    type Into = Comment;
+    type BuildError = void::Void;
+    type Arg = ();
+
+    fn build(self, arg: Self::Arg) -> (Result<Self::Into, Self::BuildError>, BuildReport) {
         let CommentBuilder {
             block_uid,
             x,
@@ -77,17 +82,35 @@ impl CommentBuilder {
             height,
             minimized,
             content,
+            build_method: _,
         } = self;
-        
-        Comment {
-            block_id: block_uid.map(|u| u.into_inner()),
+
+        let comment = Comment {
+            block_id: block_uid.map(|u| u.into_string()),
             x: x.map(|n| n.into()),
             y: y.map(|n| n.into()),
             width: (width as i64).into(),
             height: (height as i64).into(),
             minimized,
             text: content,
-        }
+        };
+        (Ok(comment), BuildReport::new())
+    }
+
+    fn check(&self, _: crate::build::BuildMethod) -> (Option<Self::BuildError>, BuildReport) {
+        (None, BuildReport::new())
+    }
+
+    fn build_method(&self) -> crate::build::BuildMethod {
+        self.build_method
+    }
+
+    fn set_build_method_to(&mut self, method: crate::build::BuildMethod) {
+        self.build_method = method
+    }
+
+    fn set_build_method_recursivly_to(&mut self, method: crate::build::BuildMethod) {
+        self.build_method = method
     }
 }
 
@@ -101,7 +124,9 @@ impl Default for CommentBuilder {
             width:     200,
             height:    200,
             minimized: false,
-            content:   "".to_owned(),
+            content:   String::new(),
+
+            build_method: BuildMethod::default()
         }
     }
 }
