@@ -23,6 +23,22 @@ pub struct TargetContext<'a> {
     pub all_broadcasts: &'a HashMap<String, Uid>,
 }
 
+fn new_project_context() -> ProjectContext {
+    Context::new(ProjectContextInner {
+        variables: HashMap::new(),
+        lists: HashMap::new(),
+        broadcasts: HashMap::new(),
+        resources: Vec::new(),
+    })
+}
+
+fn new_target_context() -> TargetContext {
+    Context::new(TargetContextInner {
+        variables: HashMap::new(),
+        lists: HashMap::new(),
+    })
+}
+
 pub type ProjectContext = Context<ProjectContextInner>;
 pub type TargetContext2 = Context<TargetContextInner>;
 

@@ -11,15 +11,15 @@ use sb_sbity::{
     variable::Variable,
 };
 
-use crate::build_context::GlobalVarListContext;
 use crate::{
     asset::{CostumeBuilder, SoundBuilder},
-    build_context::TargetContext,
+    build_context::{ProjectContext, TargetContext},
     comment::CommentBuilder,
     data::{ListBuilder, VariableBuilder},
     resource::Resource,
     stack::StackBuilder,
     uid::Uid,
+    Build, BuildMethod, BuildReport,
 };
 
 #[rustfmt::skip]
@@ -36,6 +36,8 @@ pub struct TargetBuilder {
     pub current_costume: u64,
     pub layer_order:     u64,
     pub volume:          f64,
+    pub build_method: BuildMethod,
+    is_stage: bool,
 }
 
 impl TargetBuilder {
@@ -102,6 +104,18 @@ impl TargetBuilder {
         global_varlist_ctx: Option<&GlobalVarListContext>,
         all_broadcasts: &HashMap<String, Uid>,
     ) -> (Target, Option<GlobalVarListContext>) {
+    }
+}
+
+impl Build for TargetBuilder {
+    type Builded = Target;
+    type BuildError = void::Void;
+    type Context = ProjectContext;
+
+    fn build(
+        self,
+        context: Self::Context,
+    ) -> (Result<Self::Builded, Self::BuildError>, crate::BuildReport) {
         let TargetBuilder {
             name,
             variables,
@@ -114,6 +128,8 @@ impl TargetBuilder {
             current_costume,
             layer_order,
             volume,
+            build_method,
+            is_stage,
         } = self;
         let variables: HashMap<String, Variable> = variables
             .into_iter()
@@ -207,6 +223,22 @@ impl TargetBuilder {
             },
         )
     }
+
+    fn check(&self, with_method: BuildMethod) -> (Option<Self::BuildError>, crate::BuildReport) {
+        todo!()
+    }
+
+    fn build_method(&self) -> BuildMethod {
+        todo!()
+    }
+
+    fn set_build_method_to(&mut self, method: BuildMethod) {
+        todo!()
+    }
+
+    fn set_build_method_recursivly_to(&mut self, method: BuildMethod) {
+        todo!()
+    }
 }
 
 impl Default for TargetBuilder {
@@ -224,6 +256,7 @@ impl Default for TargetBuilder {
             current_costume: 0,
             layer_order:     0,
             volume:          100.,
+            build_method:    BuildMethod::default(),
         }
     }
 }
@@ -235,6 +268,7 @@ pub struct StageBuilder {
     pub tempo:                   i64,
     pub video_state:             VideoState,
     pub video_transparency:      i64,
+    pub build_method:            BuildMethod,
     // Not availiable yet.
     // TODO: do this.
     // text_to_speech_language: (),
@@ -260,17 +294,23 @@ impl StageBuilder {
         self.video_state = video_state;
         self
     }
+}
 
-    pub fn build(
+impl Build for StageBuilder {
+    type Builded = Stage;
+    type BuildError = void::Void;
+    type Context = ProjectContext;
+
+    fn build(
         self,
-        res_buf: &mut Vec<Resource>,
-        all_broadcasts: &HashMap<String, Uid>,
-    ) -> (Stage, GlobalVarListContext) {
+        context: Self::Context,
+    ) -> (Result<Self::Builded, Self::BuildError>, crate::BuildReport) {
         let StageBuilder {
             target,
             tempo,
             video_state,
             video_transparency,
+            build_method,
         } = self;
         let (target, Some(global_var_list)) = target.build(res_buf, None, all_broadcasts) else {
             panic!("stage suppose to return what global var they had");
@@ -283,7 +323,23 @@ impl StageBuilder {
             text_to_speech_language: None,
             is_stage: true,
         };
-        (stage, global_var_list)
+        (Ok(stage), global_var_list)
+    }
+
+    fn check(&self, with_method: BuildMethod) -> (Option<Self::BuildError>, BuildReport) {
+        (None, BuildReport::new())
+    }
+
+    fn build_method(&self) -> BuildMethod {
+        self.build_method
+    }
+
+    fn set_build_method_to(&mut self, method: BuildMethod) {
+        self.build_method = method
+    }
+
+    fn set_build_method_recursivly_to(&mut self, method: BuildMethod) {
+        todo!()
     }
 }
 
@@ -297,6 +353,7 @@ impl Default for StageBuilder {
             tempo: 60,
             video_state: VideoState::On,
             video_transparency: 50,
+            build_method: BuildMethod::default(),
         }
     }
 }
@@ -312,6 +369,7 @@ pub struct SpriteBuilder {
     pub direction:      f64,
     pub draggable:      bool,
     pub rotation_style: RotationStyle,
+    pub build_method:   BuildMethod,
 }
 
 impl SpriteBuilder {
@@ -376,6 +434,7 @@ impl SpriteBuilder {
             direction,
             draggable,
             rotation_style,
+            build_method,
         } = self;
         Sprite {
             target: target
@@ -405,6 +464,7 @@ impl Default for SpriteBuilder {
             direction:      90.,
             draggable:      false,
             rotation_style: RotationStyle::AllAround,
+            build_method: BuildMethod::default()
         }
     }
 }

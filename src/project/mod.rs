@@ -92,7 +92,7 @@ impl Build for ProjectBuilder {
     }
 
     fn set_build_method_recursivly_to(&mut self, method: BuildMethod) {
-        self.set_build_method_to(method)
+        todo!()
     }
 }
 
