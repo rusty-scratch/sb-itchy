@@ -108,6 +108,7 @@ impl Default for ProjectBuilder {
                 vm:     "0.2.0-prerelease.20220222132735".to_owned(),
                 agent:  "sb-itchy/0.1.0".to_owned(),
             },
+            build_method: BuildMethod::default()
         }
     }
 }
