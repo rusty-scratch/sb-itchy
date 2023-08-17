@@ -1,6 +1,7 @@
+use core::fmt;
 use std::sync::Arc;
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Name(Arc<str>);
 
 impl Name {
@@ -8,15 +9,14 @@ impl Name {
         Name(name)
     }
 
+    /// Create a whole completely new arc.
     pub fn duplicate(&self) -> Name {
         let str = &**self;
         Name::from(str)
     }
-}
 
-impl Default for Name {
-    fn default() -> Self {
-        Name(Arc::from(""))
+    pub fn as_str(&self) -> &str {
+        &self.0
     }
 }
 
@@ -32,6 +32,12 @@ impl From<&str> for Name {
     }
 }
 
+impl<'a> From<&'a Name> for &'a str {
+    fn from(value: &'a Name) -> Self {
+        value.as_str()
+    }
+}
+
 impl std::ops::Deref for Name {
     type Target = str;
 
@@ -40,8 +46,8 @@ impl std::ops::Deref for Name {
     }
 }
 
-impl Clone for Name {
-    fn clone(&self) -> Self {
-        Name(Arc::clone(&self.0))
+impl fmt::Display for Name {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
