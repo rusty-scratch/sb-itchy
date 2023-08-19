@@ -1,3 +1,4 @@
+use crate::{context::ProjectCtx, resource::Resource, uid::Uid};
 use std::collections::HashMap;
 
 // use crate::{
@@ -32,7 +33,7 @@ impl ProjectBuilder {
     //     self
     // }
 
-    fn build(self, project_context: ProjectContext) -> sb_sbity::project::Project {
+    fn build(self, project_context: ProjectCtx) -> sb_sbity::project::Project {
         let ProjectBuilder {
             stage_builder,
             sprite_builders,
