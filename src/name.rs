@@ -26,6 +26,12 @@ impl From<String> for Name {
     }
 }
 
+impl From<&String> for Name {
+    fn from(value: &String) -> Self {
+        Name::new(Arc::from(&value[..]))
+    }
+}
+
 impl From<&str> for Name {
     fn from(value: &str) -> Self {
         Name::new(Arc::from(value))

@@ -1,4 +1,4 @@
-use crate::{context::ProjectCtx, resource::Resource, uid::Uid};
+use crate::{context::ProjectContextData, resource::Resource, uid::Uid};
 use std::collections::HashMap;
 
 // use crate::{
@@ -33,7 +33,7 @@ impl ProjectBuilder {
     //     self
     // }
 
-    fn build(self, project_context: ProjectCtx) -> sb_sbity::project::Project {
+    fn build(self, project_context: ProjectContextData) -> sb_sbity::project::Project {
         let ProjectBuilder {
             stage_builder,
             sprite_builders,
@@ -51,21 +51,21 @@ impl ProjectBuilder {
 
         let mut targets = Vec::with_capacity(1 + sprite_builders.len());
         let (stage, global_varlist_buf) = stage_builder.build(res_buf, &all_broadcasts);
-        targets.push(SpriteOrStage::Stage(stage));
+        targets.push(sb_sbity::target::SpriteOrStage::Stage(stage));
         targets.extend(sprite_builders.into_iter().map(|sprite_builder| {
-            SpriteOrStage::Sprite(sprite_builder.build(
+            sb_sbity::target::SpriteOrStage::Sprite(sprite_builder.build(
                 res_buf,
                 &global_varlist_buf,
                 &all_broadcasts,
             ))
         }));
-        let project = Project {
+        let project = sb_sbity::project::Project {
             meta,
             extensions: serde_json::value::Value::Array(vec![]),
             monitors,
             targets,
         };
-        (Ok(project), BuildReport::new())
+        project
     }
 }
 

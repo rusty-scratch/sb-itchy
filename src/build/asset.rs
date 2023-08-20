@@ -2,6 +2,8 @@ use sb_sbity::asset as sbity_asset;
 
 use crate::{name::Name, resource::Resource};
 
+use super::context::ProjectContextData;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CostumeBuilder {
     pub rotation_center_x: i64,
@@ -18,22 +20,20 @@ impl CostumeBuilder {
         }
     }
 
-    pub fn build(self) -> (sbity_asset::Costume, Resource) {
+    pub fn build(self, project_ctx: &mut ProjectContextData) -> sbity_asset::Costume {
         let CostumeBuilder {
             rotation_center_x,
             rotation_center_y,
             asset,
         } = self;
-        let (asset, resource) = asset.build();
-        (
-            sbity_asset::Costume {
-                rotation_center_x: rotation_center_x.into(),
-                rotation_center_y: rotation_center_y.into(),
-                bitmap_resolution: Some(1),
-                asset,
-            },
-            resource,
-        )
+        let asset = asset.build(project_ctx);
+
+        sbity_asset::Costume {
+            rotation_center_x: rotation_center_x.into(),
+            rotation_center_y: rotation_center_y.into(),
+            bitmap_resolution: Some(1),
+            asset,
+        }
     }
 }
 
@@ -47,23 +47,21 @@ pub struct SoundBuilder {
 }
 
 impl SoundBuilder {
-    pub fn build(self) -> (sbity_asset::Sound, Resource) {
+    pub fn build(self, project_ctx: &mut ProjectContextData) -> sbity_asset::Sound {
         let SoundBuilder {
             rate,
             sample_count,
             format,
             asset,
         } = self;
-        let (asset, resource) = asset.build();
-        (
-            sbity_asset::Sound {
-                rate,
-                sample_count,
-                format,
-                asset,
-            },
-            resource,
-        )
+        let asset = asset.build(project_ctx);
+
+        sbity_asset::Sound {
+            rate,
+            sample_count,
+            format,
+            asset,
+        }
     }
 }
 
@@ -81,7 +79,7 @@ impl AssetBuilder {
         }
     }
 
-    pub fn build(self) -> (sbity_asset::Asset, Resource) {
+    pub fn build(self, project_ctx: &mut ProjectContextData) -> sbity_asset::Asset {
         let AssetBuilder { name, resource } = self;
         let file_extension = resource.file_extension();
         let md5_hash = resource.md5_hash();
@@ -91,6 +89,7 @@ impl AssetBuilder {
             md5ext: Some(md5_hash.to_owned() + "." + file_extension),
             data_format: file_extension.to_string(),
         };
-        (asset, resource)
+        project_ctx.resources.push(resource);
+        asset
     }
 }

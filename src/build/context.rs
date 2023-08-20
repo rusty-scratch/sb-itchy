@@ -44,10 +44,6 @@ use crate::{name::Name, resource::Resource, uid::Uid};
 //         }
 //     }
 // }
-pub type ProjectCtx = ProjectContextData;
-pub type GlobalScriptingCtx = GlobalScriptingContextData;
-pub type LocalScriptingCtx = LocalScriptingContextData;
-pub type BlockStackCtx = BlockStackContextData;
 
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct ProjectContextData {
@@ -70,5 +66,5 @@ pub struct LocalScriptingContextData {
 
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct BlockStackContextData {
-    pub sbity_blocks: HashMap<Uid, sb_sbity::block::Block>,
+    pub blocks: HashMap<Uid, sb_sbity::block::Block>,
 }

@@ -25,22 +25,26 @@ impl Uid {
         Uid::from(generate())
     }
 
+    pub fn generate_string() -> String {
+        generate()
+    }
+
     pub fn as_str(&self) -> &str {
         &self.0
     }
 }
 
-impl From<String> for Uid {
-    fn from(value: String) -> Self {
-        Uid(Arc::from(value))
-    }
-}
+// impl From<String> for Uid {
+//     fn from(value: String) -> Self {
+//         Uid(Arc::from(value))
+//     }
+// }
 
-impl From<&str> for Uid {
-    fn from(value: &str) -> Self {
-        Uid(Arc::from(value))
-    }
-}
+// impl From<&str> for Uid {
+//     fn from(value: &str) -> Self {
+//         Uid(Arc::from(value))
+//     }
+// }
 
 impl<'a> From<&'a Uid> for &'a str {
     fn from(val: &'a Uid) -> Self {

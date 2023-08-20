@@ -39,3 +39,9 @@ impl fmt::Display for OpCode {
         write!(f, "{}", self.0)
     }
 }
+
+impl Default for OpCode {
+    fn default() -> Self {
+        OpCode("".into())
+    }
+}

@@ -11,6 +11,8 @@ use std::collections::HashMap;
 //     variable::Variable,
 // };
 
+use sb_sbity::string_hashmap::StringHashMap;
+
 // use crate::{
 //     asset::{CostumeBuilder, SoundBuilder},
 //     build_context::{ProjectContext, TargetContext},
@@ -22,45 +24,49 @@ use std::collections::HashMap;
 //     Build, BuildMethod, BuildReport,
 // };
 use crate::{
-    builders::asset::{CostumeBuilder, SoundBuilder},
-    context::{GlobalScriptingCtx, LocalScriptingCtx, ProjectCtx},
+    build::{
+        asset::{CostumeBuilder, SoundBuilder},
+        context::{GlobalScriptingCtx, LocalScriptingCtx, ProjectCtxMut},
+    },
+    name::Name,
+    uid::Uid,
 };
 
-#[rustfmt::skip]
+use super::{
+    comment::CommentBuilder,
+    context::{GlobalScriptingContextData, LocalScriptingContextData},
+    data::{ListBuilder, VariableBuilder},
+    stack::StackBuilder,
+};
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct TargetBuilder {
-    pub name:            String,
-    pub variables:       HashMap<String, VariableBuilder>,
-    pub lists:           HashMap<String, ListBuilder>,
-    pub broadcasts:      HashMap<String, Uid>,
-    pub block_stackes:   Vec<StackBuilder>,
-    pub comments:        HashMap<Uid, Comment>,
-    pub costumes:        Vec<CostumeBuilder>,
-    pub sounds:          Vec<SoundBuilder>,
+    pub name: String,
+    pub variables: HashMap<Name, VariableBuilder>,
+    pub lists: HashMap<Name, ListBuilder>,
+    pub broadcasts: HashMap<Name, Uid>,
+    pub block_stackes: Vec<StackBuilder>,
+    pub comments: HashMap<Uid, sb_sbity::comment::Comment>,
+    pub costumes: Vec<CostumeBuilder>,
+    pub sounds: Vec<SoundBuilder>,
     pub current_costume: u64,
-    pub layer_order:     u64,
-    pub volume:          f64,
-    pub build_method: BuildMethod,
-    is_stage: bool,
+    pub layer_order: u64,
+    pub volume: f64,
 }
 
 impl TargetBuilder {
-    pub fn add_variable<S: Into<String>>(
-        &mut self,
-        name: S,
-        variable_builder: VariableBuilder,
-    ) -> &mut Self {
-        self.variables.insert(name.into(), variable_builder);
+    pub fn add_variable(&mut self, name: Name, variable_builder: VariableBuilder) -> &mut Self {
+        self.variables.insert(name, variable_builder);
         self
     }
 
-    pub fn add_list(&mut self, name: String, list_builder: ListBuilder) -> &mut Self {
+    pub fn add_list(&mut self, name: Name, list_builder: ListBuilder) -> &mut Self {
         self.lists.insert(name, list_builder);
         self
     }
 
-    pub fn add_broadcast(&mut self, name: String) -> &mut Self {
-        self.broadcasts.insert(name, Uid::generate());
+    pub fn add_broadcast(&mut self, name: Name, uid: Uid) -> &mut Self {
+        self.broadcasts.insert(name, uid);
         self
     }
 
@@ -69,9 +75,9 @@ impl TargetBuilder {
         self
     }
 
-    pub fn add_comment(&mut self, comment_builder: CommentBuilder) -> &mut Self {
+    pub fn add_comment(&mut self, comment_builder: CommentBuilder, uid: Uid) -> &mut Self {
         let comment = comment_builder.build();
-        self.comments.insert(Uid::generate(), comment);
+        self.comments.insert(uid, comment);
         self
     }
 
@@ -85,14 +91,126 @@ impl TargetBuilder {
         self
     }
 
-    /// When global_varlist_buf suppose to be none when the Stage itself is building.
-    /// The .1 return value is going to return Some when stage itself is also building.
-    pub fn build(
+    // /// When global_varlist_buf suppose to be none when the Stage itself is building.
+    // /// The .1 return value is going to return Some when stage itself is also building.
+    // pub fn build(
+    //     self,
+    //     project_ctx: ProjectCtx,
+    //     global_scripting_ctx: GlobalScriptingCtx,
+    //     // res_buf: &mut Vec<Resource>,
+    //     // global_varlist_ctx: Option<&GlobalVarListContext>,
+    //     // all_broadcasts: &HashMap<String, Uid>,
+    // ) -> (Target, Option<GlobalVarListContext>) {
+    //     let TargetBuilder {
+    //         name,
+    //         variables,
+    //         lists,
+    //         broadcasts,
+    //         block_stackes,
+    //         comments,
+    //         costumes,
+    //         sounds,
+    //         current_costume,
+    //         layer_order,
+    //         volume,
+    //     } = self;
+    //     let variables: HashMap<String, Variable> = variables
+    //         .into_iter()
+    //         .map(|(var_name, var_builder)| {
+    //             let (var, uid) = var_builder.build(var_name);
+    //             (uid.into_inner(), var)
+    //         })
+    //         .collect();
+    //     let lists: HashMap<String, List> = lists
+    //         .into_iter()
+    //         .map(|(list_name, list_builder)| {
+    //             let (list, uid) = list_builder.build(list_name);
+    //             (uid.into_inner(), list)
+    //         })
+    //         .collect();
+    //     let broadcasts: HashMap<String, Broadcast> = broadcasts
+    //         .into_iter()
+    //         .map(|(name, uid)| (uid.into_inner(), Broadcast { name }))
+    //         .collect();
+
+    //     let mut comments = comments;
+    //     let variable_ctx: HashMap<String, Uid> = variables
+    //         .iter()
+    //         .map(|(uid, var)| (var.name.clone(), Uid::new(uid)))
+    //         .collect();
+    //     let list_ctx: HashMap<String, Uid> = lists
+    //         .iter()
+    //         .map(|(uid, list)| (list.name.clone(), Uid::new(uid)))
+    //         .collect();
+    //     let blocks: HashMap<String, Block> = block_stackes
+    //         .into_iter()
+    //         .flat_map(|stack_builder| {
+    //             let builded_stack = stack_builder.build(
+    //                 &Uid::generate(),
+    //                 &mut comments,
+    //                 &match global_varlist_ctx {
+    //                     Some(global_varlist_ctx) => TargetContext {
+    //                         global_vars: &global_varlist_ctx.vars,
+    //                         global_lists: &global_varlist_ctx.lists,
+    //                         this_sprite_vars: &variable_ctx,
+    //                         this_sprite_lists: &list_ctx,
+    //                         all_broadcasts,
+    //                     },
+    //                     None => TargetContext {
+    //                         global_vars: &variable_ctx,
+    //                         global_lists: &list_ctx,
+    //                         this_sprite_vars: &variable_ctx,
+    //                         this_sprite_lists: &list_ctx,
+    //                         all_broadcasts,
+    //                     },
+    //                 },
+    //             );
+    //             builded_stack
+    //                 .into_iter()
+    //                 .map(|(uid, block)| (uid.into_inner(), block))
+    //         })
+    //         .collect();
+    //     let comments: HashMap<String, Comment> = comments
+    //         .into_iter()
+    //         .map(|(uid, comment)| (uid.into_inner(), comment))
+    //         .collect();
+    //     let costumes: Vec<Costume> = costumes
+    //         .into_iter()
+    //         .map(|costume_builder| costume_builder.build(res_buf))
+    //         .collect();
+    //     let sounds: Vec<Sound> = sounds
+    //         .into_iter()
+    //         .map(|sound_builder| sound_builder.build(res_buf))
+    //         .collect();
+    //     let target = Target {
+    //         name,
+    //         variables: StringHashMap(variables),
+    //         lists: StringHashMap(lists),
+    //         broadcasts: StringHashMap(broadcasts),
+    //         blocks: StringHashMap(blocks),
+    //         comments: StringHashMap(comments),
+    //         current_costume: current_costume as i64,
+    //         costumes,
+    //         sounds,
+    //         layer_order: layer_order as i64,
+    //         volume: volume.into(),
+    //     };
+    //     (
+    //         target,
+    //         match global_varlist_ctx {
+    //             Some(_) => None,
+    //             None => Some(GlobalVarListContext {
+    //                 vars: variable_ctx,
+    //                 lists: list_ctx,
+    //             }),
+    //         },
+    //     )
+    // }
+
+    pub fn build_get_globals(
         self,
-        res_buf: &mut Vec<Resource>,
-        global_varlist_ctx: Option<&GlobalVarListContext>,
-        all_broadcasts: &HashMap<String, Uid>,
-    ) -> (Target, Option<GlobalVarListContext>) {
+        project_ctx: ProjectCtxMut,
+    ) -> (sb_sbity::target::Target, GlobalScriptingContextData) {
         let TargetBuilder {
             name,
             variables,
@@ -106,202 +224,101 @@ impl TargetBuilder {
             layer_order,
             volume,
         } = self;
-        let variables: HashMap<String, Variable> = variables
+        let builded_variables: HashMap<Uid, sb_sbity::variable::Variable> = variables
             .into_iter()
             .map(|(var_name, var_builder)| {
-                let (var, uid) = var_builder.build(var_name);
-                (uid.into_inner(), var)
+                let var = var_builder.build(var_name);
+                (Uid::generate(), var)
             })
             .collect();
-        let lists: HashMap<String, List> = lists
+        let builded_lists: HashMap<Uid, sb_sbity::list::List> = lists
             .into_iter()
             .map(|(list_name, list_builder)| {
-                let (list, uid) = list_builder.build(list_name);
-                (uid.into_inner(), list)
+                let list = list_builder.build(list_name);
+                (Uid::generate(), list)
             })
             .collect();
-        let broadcasts: HashMap<String, Broadcast> = broadcasts
+        let builded_broadcasts: HashMap<Uid, sb_sbity::broadcast::Broadcast> = broadcasts
             .into_iter()
-            .map(|(name, uid)| (uid.into_inner(), Broadcast { name }))
+            .map(|(name, uid)| {
+                (
+                    uid,
+                    sb_sbity::broadcast::Broadcast {
+                        name: name.to_string(),
+                    },
+                )
+            })
             .collect();
 
         let mut comments = comments;
-        let variable_ctx: HashMap<String, Uid> = variables
+        let variable_ctx: HashMap<Name, Uid> = builded_variables
             .iter()
-            .map(|(uid, var)| (var.name.clone(), Uid::new(uid)))
+            .map(|(uid, variable)| (Name::from(&variable.name), uid.clone()))
             .collect();
-        let list_ctx: HashMap<String, Uid> = lists
+        let list_ctx: HashMap<Name, Uid> = builded_lists
             .iter()
-            .map(|(uid, list)| (list.name.clone(), Uid::new(uid)))
+            .map(|(uid, list)| (Name::from(&list.name), uid.clone()))
             .collect();
-        let blocks: HashMap<String, Block> = block_stackes
-            .into_iter()
-            .flat_map(|stack_builder| {
-                let builded_stack = stack_builder.build(
-                    &Uid::generate(),
-                    &mut comments,
-                    &match global_varlist_ctx {
-                        Some(global_varlist_ctx) => TargetContext {
-                            global_vars: &global_varlist_ctx.vars,
-                            global_lists: &global_varlist_ctx.lists,
-                            this_sprite_vars: &variable_ctx,
-                            this_sprite_lists: &list_ctx,
-                            all_broadcasts,
-                        },
-                        None => TargetContext {
-                            global_vars: &variable_ctx,
-                            global_lists: &list_ctx,
-                            this_sprite_vars: &variable_ctx,
-                            this_sprite_lists: &list_ctx,
-                            all_broadcasts,
-                        },
-                    },
-                );
-                builded_stack
-                    .into_iter()
-                    .map(|(uid, block)| (uid.into_inner(), block))
-            })
-            .collect();
-        let comments: HashMap<String, Comment> = comments
-            .into_iter()
-            .map(|(uid, comment)| (uid.into_inner(), comment))
-            .collect();
-        let costumes: Vec<Costume> = costumes
-            .into_iter()
-            .map(|costume_builder| costume_builder.build(res_buf))
-            .collect();
-        let sounds: Vec<Sound> = sounds
-            .into_iter()
-            .map(|sound_builder| sound_builder.build(res_buf))
-            .collect();
-        let target = Target {
-            name,
-            variables: StringHashMap(variables),
-            lists: StringHashMap(lists),
-            broadcasts: StringHashMap(broadcasts),
-            blocks: StringHashMap(blocks),
-            comments: StringHashMap(comments),
-            current_costume: current_costume as i64,
-            costumes,
-            sounds,
-            layer_order: layer_order as i64,
-            volume: volume.into(),
-        };
-        (
-            target,
-            match global_varlist_ctx {
-                Some(_) => None,
-                None => Some(GlobalVarListContext {
-                    vars: variable_ctx,
-                    lists: list_ctx,
-                }),
-            },
-        )
-    }
-}
-
-impl Build for TargetBuilder {
-    type Builded = Target;
-    type BuildError = void::Void;
-    type Context = ProjectContext;
-
-    fn build(
-        self,
-        context: Self::Context,
-    ) -> (Result<Self::Builded, Self::BuildError>, crate::BuildReport) {
-        let TargetBuilder {
-            name,
-            variables,
-            lists,
+        let global_scripting_context_data = GlobalScriptingContextData {
+            global_variables: variable_ctx,
+            global_lists: list_ctx,
             broadcasts,
-            block_stackes,
-            comments,
-            costumes,
-            sounds,
-            current_costume,
-            layer_order,
-            volume,
-            build_method,
-            is_stage,
-        } = self;
-        let variables: HashMap<String, Variable> = variables
-            .into_iter()
-            .map(|(var_name, var_builder)| {
-                let (var, uid) = var_builder.build(var_name);
-                (uid.into_inner(), var)
-            })
-            .collect();
-        let lists: HashMap<String, List> = lists
-            .into_iter()
-            .map(|(list_name, list_builder)| {
-                let (list, uid) = list_builder.build(list_name);
-                (uid.into_inner(), list)
-            })
-            .collect();
-        let broadcasts: HashMap<String, Broadcast> = broadcasts
-            .into_iter()
-            .map(|(name, uid)| (uid.into_inner(), Broadcast { name }))
-            .collect();
-
-        let mut comments = comments;
-        let variable_ctx: HashMap<String, Uid> = variables
-            .iter()
-            .map(|(uid, var)| (var.name.clone(), Uid::new(uid)))
-            .collect();
-        let list_ctx: HashMap<String, Uid> = lists
-            .iter()
-            .map(|(uid, list)| (list.name.clone(), Uid::new(uid)))
-            .collect();
-        let blocks: HashMap<String, Block> = block_stackes
+        };
+        let local_scripting_context_data = LocalScriptingContextData {
+            variables: HashMap::new(),
+            lists: HashMap::new(),
+            comments: HashMap::new(),
+        };
+        let blocks: HashMap<String, sb_sbity::block::Block> = block_stackes
             .into_iter()
             .flat_map(|stack_builder| {
                 let builded_stack = stack_builder.build(
-                    &Uid::generate(),
-                    &mut comments,
-                    &match global_varlist_ctx {
-                        Some(global_varlist_ctx) => TargetContext {
-                            global_vars: &global_varlist_ctx.vars,
-                            global_lists: &global_varlist_ctx.lists,
-                            this_sprite_vars: &variable_ctx,
-                            this_sprite_lists: &list_ctx,
-                            all_broadcasts,
-                        },
-                        None => TargetContext {
-                            global_vars: &variable_ctx,
-                            global_lists: &list_ctx,
-                            this_sprite_vars: &variable_ctx,
-                            this_sprite_lists: &list_ctx,
-                            all_broadcasts,
-                        },
-                    },
+                    Uid::generate(),
+                    &mut global_scripting_context_data,
+                    &mut local_scripting_context_data,
                 );
                 builded_stack
                     .into_iter()
-                    .map(|(uid, block)| (uid.into_inner(), block))
+                    .map(|(uid, block)| (uid.to_string(), block))
             })
             .collect();
-        let comments: HashMap<String, Comment> = comments
+        let builded_comments: HashMap<String, sb_sbity::comment::Comment> = comments
             .into_iter()
-            .map(|(uid, comment)| (uid.into_inner(), comment))
+            .map(|(uid, comment)| (uid.to_string(), comment))
             .collect();
-        let costumes: Vec<Costume> = costumes
+        let builded_costumes: Vec<sb_sbity::asset::Costume> = costumes
             .into_iter()
-            .map(|costume_builder| costume_builder.build(res_buf))
+            .map(|costume_builder| costume_builder.build(project_ctx))
             .collect();
-        let sounds: Vec<Sound> = sounds
+        let builded_sounds: Vec<sb_sbity::asset::Sound> = sounds
             .into_iter()
-            .map(|sound_builder| sound_builder.build(res_buf))
+            .map(|sound_builder| sound_builder.build(project_ctx))
             .collect();
-        let target = Target {
+        let target = sb_sbity::target::Target {
             name,
-            variables: StringHashMap(variables),
-            lists: StringHashMap(lists),
-            broadcasts: StringHashMap(broadcasts),
+            variables: StringHashMap(
+                builded_variables
+                    .into_iter()
+                    .map(|(uid, var)| (uid.to_string(), var))
+                    .collect(),
+            ),
+            lists: StringHashMap(
+                builded_lists
+                    .into_iter()
+                    .map(|(uid, list)| (uid.to_string(), list))
+                    .collect(),
+            ),
+            broadcasts: StringHashMap(
+                builded_broadcasts
+                    .into_iter()
+                    .map(|(uid, broadcast)| (uid.to_string(), broadcast))
+                    .collect(),
+            ),
             blocks: StringHashMap(blocks),
-            comments: StringHashMap(comments),
+            comments: StringHashMap(builded_comments),
             current_costume: current_costume as i64,
-            costumes,
-            sounds,
+            costumes: builded_costumes,
+            sounds: builded_sounds,
             layer_order: layer_order as i64,
             volume: volume.into(),
         };
@@ -315,22 +332,6 @@ impl Build for TargetBuilder {
                 }),
             },
         )
-    }
-
-    fn check(&self, with_method: BuildMethod) -> (Option<Self::BuildError>, crate::BuildReport) {
-        todo!()
-    }
-
-    fn build_method(&self) -> BuildMethod {
-        todo!()
-    }
-
-    fn set_build_method_to(&mut self, method: BuildMethod) {
-        todo!()
-    }
-
-    fn set_build_method_recursivly_to(&mut self, method: BuildMethod) {
-        todo!()
     }
 }
 
@@ -354,50 +355,19 @@ impl Default for TargetBuilder {
     }
 }
 
-#[rustfmt::skip]
 #[derive(Debug, Clone, PartialEq)]
 pub struct StageBuilder {
-    pub target:                  TargetBuilder,
-    pub tempo:                   i64,
-    pub video_state:             VideoState,
-    pub video_transparency:      i64,
-    pub build_method:            BuildMethod,
+    pub target: TargetBuilder,
+    pub tempo: i64,
+    pub video_state: sb_sbity::target::VideoState,
+    pub video_transparency: i64,
     // Not availiable yet.
     // TODO: do this.
     // text_to_speech_language: (),
 }
 
 impl StageBuilder {
-    pub fn set_set_target(&mut self, target: TargetBuilder) -> &mut Self {
-        self.target = target;
-        self
-    }
-
-    pub fn set_tempo(&mut self, tempo: i64) -> &mut Self {
-        self.tempo = tempo;
-        self
-    }
-
-    pub fn set_video_transparency(&mut self, video_transparency: i64) -> &mut Self {
-        self.video_transparency = video_transparency;
-        self
-    }
-
-    pub fn set_video_state(&mut self, video_state: VideoState) -> &mut Self {
-        self.video_state = video_state;
-        self
-    }
-}
-
-impl Build for StageBuilder {
-    type Builded = Stage;
-    type BuildError = void::Void;
-    type Context = ProjectContext;
-
-    fn build(
-        self,
-        context: Self::Context,
-    ) -> (Result<Self::Builded, Self::BuildError>, crate::BuildReport) {
+    pub fn build(self, project_ctx: ProjectCtxMut) -> sb_sbity::target::Stage {
         let StageBuilder {
             target,
             tempo,
@@ -405,7 +375,7 @@ impl Build for StageBuilder {
             video_transparency,
             build_method,
         } = self;
-        let (target, Some(global_var_list)) = target.build(res_buf, None, all_broadcasts) else {
+        let (target, Some(global_var_list)) = target.build_get_globals(res_buf, None, all_broadcasts) else {
             panic!("stage suppose to return what global var they had");
         };
         let stage = Stage {
@@ -417,22 +387,6 @@ impl Build for StageBuilder {
             is_stage: true,
         };
         (Ok(stage), global_var_list)
-    }
-
-    fn check(&self, with_method: BuildMethod) -> (Option<Self::BuildError>, BuildReport) {
-        (None, BuildReport::new())
-    }
-
-    fn build_method(&self) -> BuildMethod {
-        self.build_method
-    }
-
-    fn set_build_method_to(&mut self, method: BuildMethod) {
-        self.build_method = method
-    }
-
-    fn set_build_method_recursivly_to(&mut self, method: BuildMethod) {
-        todo!()
     }
 }
 
@@ -451,67 +405,19 @@ impl Default for StageBuilder {
     }
 }
 
-#[rustfmt::skip]
 #[derive(Debug, Clone, PartialEq)]
 pub struct SpriteBuilder {
-    pub target:         TargetBuilder,
-    pub visible:        bool,
-    pub x:              f64,
-    pub y:              f64,
-    pub size:           f64,
-    pub direction:      f64,
-    pub draggable:      bool,
-    pub rotation_style: RotationStyle,
-    pub build_method:   BuildMethod,
+    pub target: TargetBuilder,
+    pub visible: bool,
+    pub x: f64,
+    pub y: f64,
+    pub size: f64,
+    pub direction: f64,
+    pub draggable: bool,
+    pub rotation_style: sb_sbity::target::RotationStyle,
 }
 
 impl SpriteBuilder {
-    pub fn set_target(&mut self, target: TargetBuilder) -> &mut Self {
-        self.target = target;
-        self
-    }
-
-    pub fn set_visible(&mut self, visible: bool) -> &mut Self {
-        self.visible = visible;
-        self
-    }
-
-    pub fn set_pos(&mut self, x: f64, y: f64) -> &mut Self {
-        self.x = x;
-        self.y = y;
-        self
-    }
-
-    pub fn set_x(&mut self, x: f64) -> &mut Self {
-        self.x = x;
-        self
-    }
-
-    pub fn set_y(&mut self, y: f64) -> &mut Self {
-        self.y = y;
-        self
-    }
-
-    pub fn set_size(&mut self, size: f64) -> &mut Self {
-        self.size = size;
-        self
-    }
-
-    pub fn set_direction(&mut self, direction: f64) -> &mut Self {
-        self.direction = direction;
-        self
-    }
-
-    pub fn set_draggable(&mut self, draggable: bool) -> &mut Self {
-        self.draggable = draggable;
-        self
-    }
-
-    pub fn set_rotation_style(&mut self, rotation_style: RotationStyle) -> &mut Self {
-        self.rotation_style = rotation_style;
-        self
-    }
-
     pub fn build(
         self,
         res_buf: &mut Vec<Resource>,
@@ -527,11 +433,10 @@ impl SpriteBuilder {
             direction,
             draggable,
             rotation_style,
-            build_method,
         } = self;
         Sprite {
             target: target
-                .build(res_buf, Some(global_varlist_buf), all_broadcasts)
+                .build_get_globals(res_buf, Some(global_varlist_buf), all_broadcasts)
                 .0,
             visible,
             x: x.into(),
@@ -546,18 +451,16 @@ impl SpriteBuilder {
 }
 
 impl Default for SpriteBuilder {
-    #[rustfmt::skip]
     fn default() -> Self {
         SpriteBuilder {
-            target:         TargetBuilder::default(),
-            visible:        true,
-            x:              0.,
-            y:              0.,
-            size:           100.,
-            direction:      90.,
-            draggable:      false,
-            rotation_style: RotationStyle::AllAround,
-            build_method: BuildMethod::default()
+            target: TargetBuilder::default(),
+            visible: true,
+            x: 0.,
+            y: 0.,
+            size: 100.,
+            direction: 90.,
+            draggable: false,
+            rotation_style: sb_sbity::target::RotationStyle::AllAround,
         }
     }
 }
