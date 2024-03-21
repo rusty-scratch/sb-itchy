@@ -24,7 +24,7 @@ pub mod build_context;
 pub mod export;
 pub mod import;
 
-pub mod block_definer;
+// pub mod block_definer;
 pub mod blocks;
 
 pub mod prelude {
